@@ -152,9 +152,19 @@ export default function Checkout() {
       const whatsappLink = getWhatsAppLink(message);
 
       clearCart();
-      window.open(whatsappLink, '_blank');
-      navigate('/');
-      toast.success('Pedido enviado! Continue a conversa no WhatsApp.');
+      toast.success('Pedido enviado! Redirecionando ao WhatsApp...');
+
+      // Detecta se é mobile para usar método adequado
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+      if (isMobile) {
+        // Em mobile, usar location.href para ativar deep link corretamente
+        window.location.href = whatsappLink;
+      } else {
+        // Em desktop, abrir nova aba
+        window.open(whatsappLink, '_blank');
+        navigate('/');
+      }
     } catch (error) {
       console.error('Checkout error:', error);
       toast.error('Erro ao processar pedido. Tente novamente.');
