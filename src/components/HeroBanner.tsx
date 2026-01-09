@@ -1,10 +1,8 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Sparkles } from 'lucide-react';
-
 export function HeroBanner() {
-  return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-secondary via-secondary to-slate-800 py-16 md:py-24">
+  return <section className="relative overflow-hidden bg-gradient-to-br from-secondary via-secondary to-slate-800 py-16 md:py-24">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute top-10 left-10 w-72 h-72 bg-primary rounded-full blur-3xl" />
@@ -36,7 +34,7 @@ export function HeroBanner() {
                 </Link>
               </Button>
               <Button asChild variant="outline" size="lg" className="border-white/30 text-white hover:bg-white/10 text-lg px-8">
-                <a href="https://wa.me/5521979265042" target="_blank" rel="noopener noreferrer">
+                <a href="https://wa.me/5521979265042" target="_blank" rel="noopener noreferrer" className="bg-primary-foreground text-secondary">
                   Fale Conosco
                 </a>
               </Button>
@@ -48,16 +46,11 @@ export function HeroBanner() {
             <div className="relative">
               <div className="absolute inset-0 bg-primary/30 rounded-full blur-3xl scale-110" />
               <div className="relative bg-white/10 backdrop-blur-sm rounded-3xl p-12 border border-white/20">
-                <img 
-                  src="/logo.png" 
-                  alt="RKPODS" 
-                  className="w-64 h-auto drop-shadow-2xl"
-                />
+                <img src="/logo.png" alt="RKPODS" className="w-64 h-auto drop-shadow-2xl" />
               </div>
             </div>
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 }
