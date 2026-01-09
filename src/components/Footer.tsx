@@ -34,15 +34,6 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Products */}
-          <div className="space-y-4">
-            <h3 className="font-semibold text-foreground">Produtos</h3>
-            <nav className="flex flex-col gap-2">
-              <Link to="/produtos" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                Ver Todos os Produtos
-              </Link>
-            </nav>
-          </div>
 
           {/* Account */}
           <div className="space-y-4">

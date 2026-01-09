@@ -20,13 +20,13 @@ export function Header() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      navigate(`/produtos?busca=${encodeURIComponent(searchQuery.trim())}`);
+      // Scroll to products section on homepage
+      const productsSection = document.getElementById('todos-produtos');
+      if (productsSection) {
+        productsSection.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   };
-
-  const navLinks = [
-    { href: '/produtos', label: 'Produtos' },
-  ];
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -36,18 +36,6 @@ export function Header() {
           <img src="/logo.png" alt="RKPODS" className="h-10 w-auto" />
         </Link>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-6">
-          {navLinks.map(link => (
-            <Link
-              key={link.href}
-              to={link.href}
-              className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
 
         {/* Search Bar */}
         <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-sm">
@@ -121,21 +109,6 @@ export function Header() {
                   </div>
                 </form>
 
-                {/* Mobile Navigation */}
-                <nav className="flex flex-col gap-4">
-                  {navLinks.map(link => (
-                    <Link
-                      key={link.href}
-                      to={link.href}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="text-lg font-medium hover:text-primary transition-colors"
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
-                </nav>
-
-                <hr className="border-border" />
 
                 {/* Mobile Account Links */}
                 <div className="flex flex-col gap-4">
