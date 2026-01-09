@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Filter, X, Search } from 'lucide-react';
+import { Filter, X, Search, MapPin } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { ProductCard } from '@/components/ProductCard';
@@ -11,9 +11,10 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { Product, Category } from '@/types';
+import { Product, Category, Zone, ZoneStock } from '@/types';
 
 export default function Products() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -23,6 +24,11 @@ export default function Products() {
   const [loading, setLoading] = useState(true);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const { user } = useAuth();
+
+  // Zone filtering
+  const [zones, setZones] = useState<Zone[]>([]);
+  const [zoneStock, setZoneStock] = useState<ZoneStock[]>([]);
+  const [selectedZoneId, setSelectedZoneId] = useState<string>(searchParams.get('zona') || '');
 
   // Filter states
   const [search, setSearch] = useState(searchParams.get('busca') || '');
@@ -35,6 +41,7 @@ export default function Products() {
   const [brands, setBrands] = useState<string[]>([]);
 
   useEffect(() => {
+    fetchZones();
     fetchCategories();
     fetchProducts();
   }, []);
@@ -44,6 +51,46 @@ export default function Products() {
       fetchFavorites();
     }
   }, [user]);
+
+  // Fetch zone stock when zone changes
+  useEffect(() => {
+    if (selectedZoneId) {
+      fetchZoneStock(selectedZoneId);
+      // Update URL param
+      const params = new URLSearchParams(searchParams);
+      params.set('zona', selectedZoneId);
+      setSearchParams(params);
+    } else {
+      setZoneStock([]);
+      // Remove zona param
+      const params = new URLSearchParams(searchParams);
+      params.delete('zona');
+      setSearchParams(params);
+    }
+  }, [selectedZoneId]);
+
+  async function fetchZones() {
+    const { data } = await supabase
+      .from('zones')
+      .select('*')
+      .eq('active', true)
+      .order('name');
+
+    if (data) {
+      setZones(data as Zone[]);
+    }
+  }
+
+  async function fetchZoneStock(zoneId: string) {
+    const { data } = await supabase
+      .from('zone_stock')
+      .select('*')
+      .eq('zone_id', zoneId);
+
+    if (data) {
+      setZoneStock(data as ZoneStock[]);
+    }
+  }
 
   async function fetchCategories() {
     const { data } = await supabase.from('categories').select('*');
@@ -77,38 +124,54 @@ export default function Products() {
     }
   }
 
+  // Get stock for a product in selected zone
+  const getProductZoneStock = (productId: string): number | null => {
+    if (!selectedZoneId || zoneStock.length === 0) return null;
+    const stockEntry = zoneStock.find(zs => zs.product_id === productId);
+    return stockEntry?.stock ?? 0;
+  };
+
   // Filter and sort products
-  const filteredProducts = products
-    .filter(product => {
-      if (search && !product.name.toLowerCase().includes(search.toLowerCase()) &&
-          !product.brand?.toLowerCase().includes(search.toLowerCase()) &&
-          !product.flavor?.toLowerCase().includes(search.toLowerCase())) {
-        return false;
-      }
-      if (selectedCategories.length > 0) {
-        const categoryMatch = selectedCategories.some(slug => 
-          product.category?.slug === slug
-        );
-        if (!categoryMatch) return false;
-      }
-      if (selectedBrands.length > 0 && !selectedBrands.includes(product.brand || '')) {
-        return false;
-      }
-      return true;
-    })
-    .sort((a, b) => {
-      switch (sortBy) {
-        case 'price_asc':
-          return a.price - b.price;
-        case 'price_desc':
-          return b.price - a.price;
-        case 'name':
-          return a.name.localeCompare(b.name);
-        case 'recent':
-        default:
-          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-      }
-    });
+  const filteredProducts = useMemo(() => {
+    return products
+      .filter(product => {
+        if (search && !product.name.toLowerCase().includes(search.toLowerCase()) &&
+            !product.brand?.toLowerCase().includes(search.toLowerCase()) &&
+            !product.flavor?.toLowerCase().includes(search.toLowerCase())) {
+          return false;
+        }
+        if (selectedCategories.length > 0) {
+          const categoryMatch = selectedCategories.some(slug => 
+            product.category?.slug === slug
+          );
+          if (!categoryMatch) return false;
+        }
+        if (selectedBrands.length > 0 && !selectedBrands.includes(product.brand || '')) {
+          return false;
+        }
+        // Filter by zone stock if zone is selected
+        if (selectedZoneId) {
+          const stock = getProductZoneStock(product.id);
+          if (stock !== null && stock <= 0) {
+            return false;
+          }
+        }
+        return true;
+      })
+      .sort((a, b) => {
+        switch (sortBy) {
+          case 'price_asc':
+            return a.price - b.price;
+          case 'price_desc':
+            return b.price - a.price;
+          case 'name':
+            return a.name.localeCompare(b.name);
+          case 'recent':
+          default:
+            return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        }
+      });
+  }, [products, search, selectedCategories, selectedBrands, sortBy, selectedZoneId, zoneStock]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -138,13 +201,44 @@ export default function Products() {
     setSelectedCategories([]);
     setSelectedBrands([]);
     setSortBy('recent');
+    setSelectedZoneId('');
     setSearchParams({});
   };
 
-  const hasActiveFilters = search || selectedCategories.length > 0 || selectedBrands.length > 0;
+  const hasActiveFilters = search || selectedCategories.length > 0 || selectedBrands.length > 0 || selectedZoneId;
+
+  const selectedZone = zones.find(z => z.id === selectedZoneId);
 
   const FilterContent = () => (
     <div className="space-y-6">
+      {/* Zone Filter */}
+      {zones.length > 0 && (
+        <div>
+          <h3 className="font-semibold mb-3 flex items-center gap-2">
+            <MapPin className="h-4 w-4" />
+            Zona de Entrega
+          </h3>
+          <Select value={selectedZoneId} onValueChange={setSelectedZoneId}>
+            <SelectTrigger>
+              <SelectValue placeholder="Todas as zonas" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">Todas as zonas</SelectItem>
+              {zones.map(zone => (
+                <SelectItem key={zone.id} value={zone.id}>
+                  {zone.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {selectedZone && (
+            <p className="text-xs text-muted-foreground mt-2">
+              Mostrando apenas produtos com estoque em {selectedZone.name}
+            </p>
+          )}
+        </div>
+      )}
+
       {/* Categories */}
       <div>
         <h3 className="font-semibold mb-3">Categorias</h3>
@@ -203,9 +297,17 @@ export default function Products() {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
             <div>
               <h1 className="text-3xl font-bold">Produtos</h1>
-              <p className="text-muted-foreground">
-                {filteredProducts.length} produto{filteredProducts.length !== 1 ? 's' : ''} encontrado{filteredProducts.length !== 1 ? 's' : ''}
-              </p>
+              <div className="flex items-center gap-2 mt-1">
+                <p className="text-muted-foreground">
+                  {filteredProducts.length} produto{filteredProducts.length !== 1 ? 's' : ''} encontrado{filteredProducts.length !== 1 ? 's' : ''}
+                </p>
+                {selectedZone && (
+                  <Badge variant="secondary" className="flex items-center gap-1">
+                    <MapPin className="h-3 w-3" />
+                    {selectedZone.name}
+                  </Badge>
+                )}
+              </div>
             </div>
 
             <div className="flex items-center gap-3">
@@ -288,7 +390,9 @@ export default function Products() {
               ) : filteredProducts.length === 0 ? (
                 <div className="text-center py-12">
                   <p className="text-muted-foreground text-lg mb-4">
-                    Nenhum produto encontrado
+                    {selectedZoneId 
+                      ? 'Nenhum produto disponível nesta zona'
+                      : 'Nenhum produto encontrado'}
                   </p>
                   <Button variant="outline" onClick={clearFilters}>
                     Limpar filtros

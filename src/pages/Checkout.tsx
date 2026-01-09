@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { ArrowLeft, MapPin, MessageCircle, Check, Store } from 'lucide-react';
+import { ArrowLeft, MapPin, MessageCircle, Check, Store, X, AlertTriangle, Package } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -11,10 +11,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
-import { Address, Zone } from '@/types';
+import { Address, Zone, ZoneStock } from '@/types';
 import { generateWhatsAppMessage, getWhatsAppLink } from '@/lib/whatsapp';
 import { toast } from 'sonner';
 
@@ -32,6 +33,14 @@ const addressSchema = z.object({
 
 type AddressForm = z.infer<typeof addressSchema>;
 
+interface ItemAvailability {
+  productId: string;
+  productName: string;
+  requested: number;
+  available: number;
+  isAvailable: boolean;
+}
+
 export default function Checkout() {
   const [savedAddresses, setSavedAddresses] = useState<Address[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState<string>('new');
@@ -39,6 +48,8 @@ export default function Checkout() {
   const [selectedZoneId, setSelectedZoneId] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cepLoading, setCepLoading] = useState(false);
+  const [zoneStock, setZoneStock] = useState<ZoneStock[]>([]);
+  const [stockLoading, setStockLoading] = useState(false);
   const { items, totalPrice, clearCart } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -64,6 +75,15 @@ export default function Checkout() {
       fetchAddresses();
     }
   }, [user]);
+
+  // Fetch zone stock when zone changes
+  useEffect(() => {
+    if (selectedZoneId) {
+      fetchZoneStock(selectedZoneId);
+    } else {
+      setZoneStock([]);
+    }
+  }, [selectedZoneId]);
 
   async function fetchZones() {
     const { data } = await supabase
@@ -98,6 +118,49 @@ export default function Checkout() {
     }
   }
 
+  async function fetchZoneStock(zoneId: string) {
+    setStockLoading(true);
+    const { data } = await supabase
+      .from('zone_stock')
+      .select('*')
+      .eq('zone_id', zoneId);
+
+    if (data) {
+      setZoneStock(data as ZoneStock[]);
+    }
+    setStockLoading(false);
+  }
+
+  // Calculate availability for each item
+  const itemsAvailability = useMemo<ItemAvailability[]>(() => {
+    if (!selectedZoneId || zoneStock.length === 0) {
+      // If no zone selected or no stock data, assume all available
+      return items.map(item => ({
+        productId: item.product.id,
+        productName: item.product.name,
+        requested: item.quantity,
+        available: item.product.stock, // Use global stock as fallback
+        isAvailable: true,
+      }));
+    }
+
+    return items.map(item => {
+      const stockEntry = zoneStock.find(zs => zs.product_id === item.product.id);
+      const availableStock = stockEntry?.stock ?? 0;
+      
+      return {
+        productId: item.product.id,
+        productName: item.product.name,
+        requested: item.quantity,
+        available: availableStock,
+        isAvailable: availableStock >= item.quantity,
+      };
+    });
+  }, [items, zoneStock, selectedZoneId]);
+
+  const allItemsAvailable = itemsAvailability.every(item => item.isAvailable);
+  const unavailableItems = itemsAvailability.filter(item => !item.isAvailable);
+
   const handleCepBlur = async () => {
     const cep = form.getValues('cep').replace(/\D/g, '');
     if (cep.length !== 8) return;
@@ -125,6 +188,11 @@ export default function Checkout() {
   const handleSubmit = async (formData: AddressForm) => {
     if (!selectedZoneId) {
       toast.error('Por favor, selecione uma zona de entrega.');
+      return;
+    }
+
+    if (!allItemsAvailable) {
+      toast.error('Alguns produtos não estão disponíveis nesta zona.');
       return;
     }
 
@@ -219,6 +287,8 @@ export default function Checkout() {
     }
   };
 
+  const canSubmit = selectedZoneId && allItemsAvailable && !stockLoading;
+
   if (items.length === 0) {
     return null;
   }
@@ -285,6 +355,58 @@ export default function Checkout() {
                     <p className="text-sm text-destructive mt-2">
                       Selecione uma zona para continuar
                     </p>
+                  )}
+
+                  {/* Stock Availability Feedback */}
+                  {selectedZoneId && (
+                    <div className="mt-4">
+                      {stockLoading ? (
+                        <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg">
+                          <Skeleton className="h-4 w-4 rounded-full" />
+                          <Skeleton className="h-4 w-48" />
+                        </div>
+                      ) : allItemsAvailable ? (
+                        <div className="flex items-center gap-2 p-3 bg-green-500/10 border border-green-500/20 rounded-lg text-green-600">
+                          <Check className="h-5 w-5 flex-shrink-0" />
+                          <span className="font-medium">Todos os produtos disponíveis nesta zona!</span>
+                        </div>
+                      ) : (
+                        <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-lg space-y-3">
+                          <div className="flex items-center gap-2 text-amber-600">
+                            <AlertTriangle className="h-5 w-5 flex-shrink-0" />
+                            <span className="font-medium">Alguns produtos não estão disponíveis:</span>
+                          </div>
+                          <ul className="space-y-2">
+                            {itemsAvailability.map(item => (
+                              <li key={item.productId} className="flex items-center gap-2 text-sm">
+                                {item.isAvailable ? (
+                                  <Check className="h-4 w-4 text-green-600 flex-shrink-0" />
+                                ) : (
+                                  <X className="h-4 w-4 text-red-600 flex-shrink-0" />
+                                )}
+                                <span className={!item.isAvailable ? 'text-red-600' : ''}>
+                                  {item.productName}
+                                  {!item.isAvailable && (
+                                    <span className="text-muted-foreground ml-1">
+                                      (apenas {item.available} em estoque)
+                                    </span>
+                                  )}
+                                </span>
+                              </li>
+                            ))}
+                          </ul>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            className="w-full mt-2"
+                            onClick={() => navigate(`/produtos?zona=${selectedZoneId}`)}
+                          >
+                            <Package className="h-4 w-4 mr-2" />
+                            Ver produtos disponíveis nesta zona
+                          </Button>
+                        </div>
+                      )}
+                    </div>
                   )}
                 </CardContent>
               </Card>
@@ -464,10 +586,14 @@ export default function Checkout() {
                         type="submit"
                         className="w-full gradient-primary"
                         size="lg"
-                        disabled={isSubmitting || !selectedZoneId}
+                        disabled={!canSubmit || isSubmitting}
                       >
                         <MessageCircle className="h-5 w-5 mr-2" />
-                        {isSubmitting ? 'Processando...' : 'Finalizar pelo WhatsApp'}
+                        {isSubmitting 
+                          ? 'Processando...' 
+                          : !allItemsAvailable 
+                            ? 'Produtos indisponíveis' 
+                            : 'Finalizar pelo WhatsApp'}
                       </Button>
                     </form>
                   )}
@@ -483,10 +609,14 @@ export default function Checkout() {
                       }}
                       className="w-full gradient-primary"
                       size="lg"
-                      disabled={isSubmitting || !selectedZoneId}
+                      disabled={!canSubmit || isSubmitting}
                     >
                       <MessageCircle className="h-5 w-5 mr-2" />
-                      {isSubmitting ? 'Processando...' : 'Finalizar pelo WhatsApp'}
+                      {isSubmitting 
+                        ? 'Processando...' 
+                        : !allItemsAvailable 
+                          ? 'Produtos indisponíveis' 
+                          : 'Finalizar pelo WhatsApp'}
                     </Button>
                   )}
                 </CardContent>
@@ -500,26 +630,46 @@ export default function Checkout() {
                   <CardTitle>Resumo do Pedido</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {items.map(item => (
-                    <div key={item.product.id} className="flex gap-3">
-                      <img
-                        src={item.product.images?.[0] || 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=100'}
-                        alt={item.product.name}
-                        className="w-16 h-16 object-cover rounded"
-                      />
-                      <div className="flex-1">
-                        <p className="font-medium text-sm line-clamp-1">
-                          {item.product.name}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          {item.quantity}x R$ {item.product.price.toFixed(2).replace('.', ',')}
+                  {items.map(item => {
+                    const availability = itemsAvailability.find(a => a.productId === item.product.id);
+                    const isUnavailable = availability && !availability.isAvailable;
+                    
+                    return (
+                      <div 
+                        key={item.product.id} 
+                        className={`flex gap-3 ${isUnavailable ? 'opacity-60' : ''}`}
+                      >
+                        <div className="relative">
+                          <img
+                            src={item.product.images?.[0] || 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=100'}
+                            alt={item.product.name}
+                            className="w-16 h-16 object-cover rounded"
+                          />
+                          {isUnavailable && (
+                            <div className="absolute inset-0 bg-background/80 rounded flex items-center justify-center">
+                              <X className="h-6 w-6 text-destructive" />
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-medium text-sm line-clamp-1">
+                            {item.product.name}
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            {item.quantity}x R$ {item.product.price.toFixed(2).replace('.', ',')}
+                          </p>
+                          {isUnavailable && (
+                            <p className="text-xs text-destructive">
+                              Indisponível nesta zona
+                            </p>
+                          )}
+                        </div>
+                        <p className="font-semibold text-sm">
+                          R$ {(item.product.price * item.quantity).toFixed(2).replace('.', ',')}
                         </p>
                       </div>
-                      <p className="font-semibold text-sm">
-                        R$ {(item.product.price * item.quantity).toFixed(2).replace('.', ',')}
-                      </p>
-                    </div>
-                  ))}
+                    );
+                  })}
 
                   <hr className="border-border" />
 
