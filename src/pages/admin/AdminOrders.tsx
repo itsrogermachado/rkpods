@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Eye, MessageCircle } from 'lucide-react';
+import { Eye, MessageCircle, MapPinned } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Skeleton } from '@/components/ui/skeleton';
 import { supabase } from '@/integrations/supabase/client';
-import { Order, Address, CartItem } from '@/types';
+import { Order, Address, CartItem, Zone } from '@/types';
 import { toast } from 'sonner';
 
 const statusOptions = [
@@ -18,30 +18,38 @@ const statusOptions = [
   { value: 'cancelled', label: 'Cancelado' },
 ];
 
+interface OrderWithZone extends Order {
+  zone_id?: string | null;
+  zone_name?: string | null;
+}
+
 export default function AdminOrders() {
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [orders, setOrders] = useState<OrderWithZone[]>([]);
+  const [zones, setZones] = useState<Zone[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [selectedOrder, setSelectedOrder] = useState<OrderWithZone | null>(null);
   const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [filterZone, setFilterZone] = useState<string>('all');
 
   useEffect(() => {
-    fetchOrders();
+    fetchData();
   }, []);
 
-  async function fetchOrders() {
+  async function fetchData() {
     setLoading(true);
-    const { data } = await supabase
-      .from('orders')
-      .select('*')
-      .order('created_at', { ascending: false });
+    const [ordersRes, zonesRes] = await Promise.all([
+      supabase.from('orders').select('*').order('created_at', { ascending: false }),
+      supabase.from('zones').select('*').order('name'),
+    ]);
 
-    if (data) {
-      setOrders(data.map(order => ({
+    if (ordersRes.data) {
+      setOrders(ordersRes.data.map(order => ({
         ...order,
         items: order.items as unknown as CartItem[],
         address: order.address as unknown as Address,
-      })) as Order[]);
+      })) as OrderWithZone[]);
     }
+    if (zonesRes.data) setZones(zonesRes.data as Zone[]);
     setLoading(false);
   }
 
@@ -55,7 +63,7 @@ export default function AdminOrders() {
       toast.error('Erro ao atualizar status');
     } else {
       toast.success('Status atualizado');
-      fetchOrders();
+      fetchData();
     }
   }
 
@@ -71,11 +79,15 @@ export default function AdminOrders() {
     return <Badge variant={s.variant}>{s.label}</Badge>;
   };
 
-  const filteredOrders = filterStatus === 'all'
-    ? orders
-    : orders.filter(o => o.status === filterStatus);
+  const filteredOrders = orders
+    .filter(o => filterStatus === 'all' || o.status === filterStatus)
+    .filter(o => filterZone === 'all' || o.zone_id === filterZone);
 
-  const sendWhatsApp = (order: Order) => {
+  const sendWhatsApp = (order: OrderWithZone) => {
+    // Find the zone to get the WhatsApp number
+    const zone = zones.find(z => z.id === order.zone_id);
+    const whatsappNumber = zone?.whatsapp_number || '55';
+    
     const address = order.address;
     const message = `Olá! Sobre seu pedido #${order.id.slice(0, 8)}:
 
@@ -86,26 +98,41 @@ ${address.street}, ${address.number}
 ${address.neighborhood}, ${address.city} - ${address.state}
 CEP: ${address.cep}`;
 
-    window.open(`https://wa.me/55?text=${encodeURIComponent(message)}`, '_blank');
+    window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
   };
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
         <h1 className="text-3xl font-bold">Pedidos</h1>
-        <Select value={filterStatus} onValueChange={setFilterStatus}>
-          <SelectTrigger className="w-40">
-            <SelectValue placeholder="Filtrar" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Todos</SelectItem>
-            {statusOptions.map(s => (
-              <SelectItem key={s.value} value={s.value}>
-                {s.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="flex items-center gap-2">
+          <Select value={filterZone} onValueChange={setFilterZone}>
+            <SelectTrigger className="w-40">
+              <SelectValue placeholder="Zona" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todas Zonas</SelectItem>
+              {zones.map(z => (
+                <SelectItem key={z.id} value={z.id}>
+                  {z.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select value={filterStatus} onValueChange={setFilterStatus}>
+            <SelectTrigger className="w-40">
+              <SelectValue placeholder="Filtrar" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos Status</SelectItem>
+              {statusOptions.map(s => (
+                <SelectItem key={s.value} value={s.value}>
+                  {s.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {loading ? (
@@ -125,9 +152,15 @@ CEP: ${address.cep}`;
               <CardContent className="py-4">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
-                    <div className="flex items-center gap-2 mb-1">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
                       <span className="font-semibold">#{order.id.slice(0, 8)}</span>
                       {getStatusBadge(order.status)}
+                      {order.zone_name && (
+                        <Badge variant="outline" className="flex items-center gap-1">
+                          <MapPinned className="h-3 w-3" />
+                          {order.zone_name}
+                        </Badge>
+                      )}
                     </div>
                     <p className="text-sm text-muted-foreground">
                       {new Date(order.created_at).toLocaleDateString('pt-BR', {
@@ -198,9 +231,20 @@ CEP: ${address.cep}`;
           </DialogHeader>
           {selectedOrder && (
             <div className="space-y-6">
-              <div>
-                <h3 className="font-semibold mb-2">Status</h3>
-                {getStatusBadge(selectedOrder.status)}
+              <div className="flex items-center gap-4">
+                <div>
+                  <h3 className="font-semibold mb-2">Status</h3>
+                  {getStatusBadge(selectedOrder.status)}
+                </div>
+                {selectedOrder.zone_name && (
+                  <div>
+                    <h3 className="font-semibold mb-2">Zona</h3>
+                    <Badge variant="outline" className="flex items-center gap-1">
+                      <MapPinned className="h-3 w-3" />
+                      {selectedOrder.zone_name}
+                    </Badge>
+                  </div>
+                )}
               </div>
 
               <div>

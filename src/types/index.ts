@@ -63,5 +63,24 @@ export interface Order {
   total: number;
   address: Address;
   status: string;
+  zone_id?: string | null;
+  zone_name?: string | null;
+  created_at: string;
+}
+
+export interface Zone {
+  id: string;
+  name: string;
+  slug: string;
+  whatsapp_number: string;
+  active: boolean;
+  created_at: string;
+}
+
+export interface ZoneStock {
+  id: string;
+  zone_id: string;
+  product_id: string;
+  stock: number;
   created_at: string;
 }

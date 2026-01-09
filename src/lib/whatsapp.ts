@@ -1,8 +1,6 @@
 import { CartItem, Address } from '@/types';
 
-const WHATSAPP_NUMBER = '5521979265042';
-
-export function generateWhatsAppMessage(items: CartItem[], address: Address, total: number): string {
+export function generateWhatsAppMessage(items: CartItem[], address: Address, total: number, zoneName?: string): string {
   const productLines = items.map(item => 
     `• ${item.quantity}x ${item.product.name} - R$ ${(item.product.price * item.quantity).toFixed(2).replace('.', ',')}`
   ).join('\n');
@@ -17,6 +15,7 @@ export function generateWhatsAppMessage(items: CartItem[], address: Address, tot
   ].join('');
 
   const message = `*🛒 NOVO PEDIDO - RKPODS*
+${zoneName ? `\n*📍 Zona: ${zoneName}*` : ''}
 
 *Produtos:*
 ${productLines}
@@ -32,6 +31,6 @@ Por favor, confirme a disponibilidade e o prazo de entrega.`;
   return message;
 }
 
-export function getWhatsAppLink(message: string): string {
-  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+export function getWhatsAppLink(message: string, whatsappNumber: string): string {
+  return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 }

@@ -127,6 +127,8 @@ export type Database = {
           status: string | null
           total: number
           user_id: string | null
+          zone_id: string | null
+          zone_name: string | null
         }
         Insert: {
           address: Json
@@ -136,6 +138,8 @@ export type Database = {
           status?: string | null
           total: number
           user_id?: string | null
+          zone_id?: string | null
+          zone_name?: string | null
         }
         Update: {
           address?: Json
@@ -145,8 +149,18 @@ export type Database = {
           status?: string | null
           total?: number
           user_id?: string | null
+          zone_id?: string | null
+          zone_name?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "orders_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "zones"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       products: {
         Row: {
@@ -258,6 +272,72 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      zone_stock: {
+        Row: {
+          created_at: string
+          id: string
+          product_id: string
+          stock: number
+          zone_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          product_id: string
+          stock?: number
+          zone_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          product_id?: string
+          stock?: number
+          zone_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "zone_stock_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "zone_stock_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "zones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      zones: {
+        Row: {
+          active: boolean | null
+          created_at: string
+          id: string
+          name: string
+          slug: string
+          whatsapp_number: string
+        }
+        Insert: {
+          active?: boolean | null
+          created_at?: string
+          id?: string
+          name: string
+          slug: string
+          whatsapp_number: string
+        }
+        Update: {
+          active?: boolean | null
+          created_at?: string
+          id?: string
+          name?: string
+          slug?: string
+          whatsapp_number?: string
         }
         Relationships: []
       }

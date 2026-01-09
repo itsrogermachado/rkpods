@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Eye, EyeOff } from 'lucide-react';
+import { Plus, Edit2, Trash2, Eye, EyeOff, Package } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -11,15 +11,20 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Skeleton } from '@/components/ui/skeleton';
 import { supabase } from '@/integrations/supabase/client';
-import { Product, Category } from '@/types';
+import { Product, Category, Zone, ZoneStock } from '@/types';
 import { toast } from 'sonner';
 
+interface ProductWithStock extends Product {
+  zoneStocks: ZoneStock[];
+}
+
 export default function AdminProducts() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<ProductWithStock[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [zones, setZones] = useState<Zone[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [editingProduct, setEditingProduct] = useState<ProductWithStock | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     slug: '',
@@ -30,11 +35,11 @@ export default function AdminProducts() {
     brand: '',
     flavor: '',
     nicotine_level: '',
-    stock: '0',
     images: '',
     featured: false,
     active: true,
   });
+  const [zoneStockData, setZoneStockData] = useState<Record<string, string>>({});
 
   useEffect(() => {
     fetchData();
@@ -42,13 +47,34 @@ export default function AdminProducts() {
 
   async function fetchData() {
     setLoading(true);
-    const [productsRes, categoriesRes] = await Promise.all([
+    const [productsRes, categoriesRes, zonesRes] = await Promise.all([
       supabase.from('products').select('*, category:categories(*)').order('created_at', { ascending: false }),
       supabase.from('categories').select('*'),
+      supabase.from('zones').select('*').order('name'),
     ]);
 
-    if (productsRes.data) setProducts(productsRes.data as unknown as Product[]);
+    let productsWithStock: ProductWithStock[] = [];
+    
+    if (productsRes.data) {
+      // Fetch zone stocks for all products
+      const productIds = productsRes.data.map(p => p.id);
+      const { data: stockData } = await supabase
+        .from('zone_stock')
+        .select('*')
+        .in('product_id', productIds);
+
+      productsWithStock = productsRes.data.map(product => ({
+        ...product,
+        images: product.images || [],
+        featured: product.featured || false,
+        active: product.active !== false,
+        zoneStocks: (stockData?.filter(s => s.product_id === product.id) || []) as ZoneStock[],
+      })) as unknown as ProductWithStock[];
+    }
+
+    setProducts(productsWithStock);
     if (categoriesRes.data) setCategories(categoriesRes.data as Category[]);
+    if (zonesRes.data) setZones(zonesRes.data as Zone[]);
     setLoading(false);
   }
 
@@ -81,15 +107,18 @@ export default function AdminProducts() {
       brand: '',
       flavor: '',
       nicotine_level: '',
-      stock: '0',
       images: '',
       featured: false,
       active: true,
     });
+    // Initialize zone stocks to 0
+    const initialStocks: Record<string, string> = {};
+    zones.forEach(z => { initialStocks[z.id] = '0'; });
+    setZoneStockData(initialStocks);
     setDialogOpen(true);
   };
 
-  const openEdit = (product: Product) => {
+  const openEdit = (product: ProductWithStock) => {
     setEditingProduct(product);
     setFormData({
       name: product.name,
@@ -101,16 +130,25 @@ export default function AdminProducts() {
       brand: product.brand || '',
       flavor: product.flavor || '',
       nicotine_level: product.nicotine_level || '',
-      stock: product.stock.toString(),
       images: product.images?.join(', ') || '',
       featured: product.featured,
       active: product.active,
     });
+    // Load existing zone stocks
+    const stocks: Record<string, string> = {};
+    zones.forEach(z => {
+      const existing = product.zoneStocks.find(s => s.zone_id === z.id);
+      stocks[z.id] = existing ? existing.stock.toString() : '0';
+    });
+    setZoneStockData(stocks);
     setDialogOpen(true);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Calculate total stock from all zones
+    const totalStock = Object.values(zoneStockData).reduce((sum, val) => sum + (parseInt(val) || 0), 0);
 
     const productData = {
       name: formData.name,
@@ -122,7 +160,7 @@ export default function AdminProducts() {
       brand: formData.brand || null,
       flavor: formData.flavor || null,
       nicotine_level: formData.nicotine_level || null,
-      stock: parseInt(formData.stock) || 0,
+      stock: totalStock, // Keep for backward compatibility
       images: formData.images ? formData.images.split(',').map(s => s.trim()).filter(Boolean) : [],
       featured: formData.featured,
       active: formData.active,
@@ -136,21 +174,59 @@ export default function AdminProducts() {
 
       if (error) {
         toast.error('Erro ao atualizar produto');
-      } else {
-        toast.success('Produto atualizado');
-        fetchData();
-        setDialogOpen(false);
+        return;
       }
-    } else {
-      const { error } = await supabase.from('products').insert(productData);
 
-      if (error) {
-        toast.error('Erro ao criar produto');
-      } else {
-        toast.success('Produto criado');
-        fetchData();
-        setDialogOpen(false);
+      // Update zone stocks
+      for (const zone of zones) {
+        const stock = parseInt(zoneStockData[zone.id]) || 0;
+        const existing = editingProduct.zoneStocks.find(s => s.zone_id === zone.id);
+        
+        if (existing) {
+          await supabase
+            .from('zone_stock')
+            .update({ stock })
+            .eq('id', existing.id);
+        } else if (stock > 0) {
+          await supabase.from('zone_stock').insert({
+            zone_id: zone.id,
+            product_id: editingProduct.id,
+            stock,
+          });
+        }
       }
+
+      toast.success('Produto atualizado');
+      fetchData();
+      setDialogOpen(false);
+    } else {
+      const { data: newProduct, error } = await supabase
+        .from('products')
+        .insert(productData)
+        .select()
+        .single();
+
+      if (error || !newProduct) {
+        toast.error('Erro ao criar produto');
+        return;
+      }
+
+      // Create zone stocks for the new product
+      const stocksToInsert = zones
+        .map(zone => ({
+          zone_id: zone.id,
+          product_id: newProduct.id,
+          stock: parseInt(zoneStockData[zone.id]) || 0,
+        }))
+        .filter(s => s.stock > 0);
+
+      if (stocksToInsert.length > 0) {
+        await supabase.from('zone_stock').insert(stocksToInsert);
+      }
+
+      toast.success('Produto criado');
+      fetchData();
+      setDialogOpen(false);
     }
   };
 
@@ -177,6 +253,10 @@ export default function AdminProducts() {
     } else {
       fetchData();
     }
+  };
+
+  const getTotalStock = (product: ProductWithStock) => {
+    return product.zoneStocks.reduce((sum, s) => sum + s.stock, 0);
   };
 
   return (
@@ -228,7 +308,7 @@ export default function AdminProducts() {
                 />
               </div>
 
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="price">Preço *</Label>
                   <Input
@@ -250,16 +330,38 @@ export default function AdminProducts() {
                     onChange={e => setFormData(prev => ({ ...prev, original_price: e.target.value }))}
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="stock">Estoque *</Label>
-                  <Input
-                    id="stock"
-                    type="number"
-                    value={formData.stock}
-                    onChange={e => setFormData(prev => ({ ...prev, stock: e.target.value }))}
-                    required
-                  />
+              </div>
+
+              {/* Zone Stock Section */}
+              <div className="space-y-3">
+                <Label className="flex items-center gap-2">
+                  <Package className="h-4 w-4" />
+                  Estoque por Zona
+                </Label>
+                <div className="grid grid-cols-2 gap-3">
+                  {zones.map(zone => (
+                    <div key={zone.id} className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg">
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">{zone.name}</p>
+                      </div>
+                      <Input
+                        type="number"
+                        min="0"
+                        className="w-24"
+                        value={zoneStockData[zone.id] || '0'}
+                        onChange={e => setZoneStockData(prev => ({
+                          ...prev,
+                          [zone.id]: e.target.value,
+                        }))}
+                      />
+                    </div>
+                  ))}
                 </div>
+                {zones.length === 0 && (
+                  <p className="text-sm text-muted-foreground">
+                    Nenhuma zona cadastrada. Adicione zonas primeiro.
+                  </p>
+                )}
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -381,14 +483,28 @@ export default function AdminProducts() {
                   <p className="text-sm text-muted-foreground">
                     {product.category?.name || 'Sem categoria'} • {product.brand || 'Sem marca'}
                   </p>
-                  <p className="text-sm font-medium text-primary">
-                    R$ {product.price.toFixed(2).replace('.', ',')}
-                    {product.original_price && (
-                      <span className="text-muted-foreground line-through ml-2">
-                        R$ {product.original_price.toFixed(2).replace('.', ',')}
-                      </span>
-                    )}
-                  </p>
+                  <div className="flex items-center gap-4 mt-1">
+                    <p className="text-sm font-medium text-primary">
+                      R$ {product.price.toFixed(2).replace('.', ',')}
+                      {product.original_price && (
+                        <span className="text-muted-foreground line-through ml-2">
+                          R$ {product.original_price.toFixed(2).replace('.', ',')}
+                        </span>
+                      )}
+                    </p>
+                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                      <Package className="h-3 w-3" />
+                      <span>Total: {getTotalStock(product)}</span>
+                      {product.zoneStocks.length > 0 && (
+                        <span className="text-muted-foreground/60">
+                          ({product.zoneStocks.map(s => {
+                            const zone = zones.find(z => z.id === s.zone_id);
+                            return zone ? `${zone.name.slice(0, 2)}: ${s.stock}` : null;
+                          }).filter(Boolean).join(', ')})
+                        </span>
+                      )}
+                    </div>
+                  </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <Button
