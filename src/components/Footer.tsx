@@ -8,8 +8,8 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="space-y-4">
-            <Link to="/" className="text-2xl font-bold text-gradient">
-              RKPODS
+            <Link to="/" className="inline-block">
+              <img src="/logo.png" alt="RKPODS" className="h-12 w-auto" />
             </Link>
             <p className="text-sm text-muted-foreground">
               Os melhores produtos para você. Qualidade e variedade que você merece.

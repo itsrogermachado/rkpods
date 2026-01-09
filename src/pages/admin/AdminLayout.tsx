@@ -53,14 +53,16 @@ export default function AdminLayout() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="w-72 p-6">
-                <div className="mb-8">
-                  <span className="text-xl font-bold text-gradient">RKPODS Admin</span>
+                <div className="mb-8 flex items-center gap-2">
+                  <img src="/logo.png" alt="RKPODS" className="h-8 w-auto" />
+                  <span className="text-lg font-semibold text-muted-foreground">Admin</span>
                 </div>
                 <NavContent />
               </SheetContent>
             </Sheet>
-            <Link to="/admin" className="text-xl font-bold text-gradient">
-              RKPODS Admin
+            <Link to="/admin" className="flex items-center gap-2">
+              <img src="/logo.png" alt="RKPODS" className="h-8 w-auto" />
+              <span className="text-lg font-semibold text-muted-foreground">Admin</span>
             </Link>
           </div>
           <Button variant="outline" size="sm" asChild className="border-2">
