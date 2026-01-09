@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Instagram, MessageCircle, Shield, CreditCard, BadgeCheck, Lock } from 'lucide-react';
+import { Instagram, MessageCircle } from 'lucide-react';
 
 export function Footer() {
   return (
@@ -34,6 +34,7 @@ export function Footer() {
             </div>
           </div>
 
+
           {/* Account */}
           <div className="space-y-4">
             <h3 className="font-semibold text-foreground">Minha Conta</h3>
@@ -63,36 +64,6 @@ export function Footer() {
                 WhatsApp: (21) 97926-5042
               </a>
               <p>Atendimento: Seg à Sex, 9h às 18h</p>
-            </div>
-          </div>
-
-          {/* Payment & Security */}
-          <div className="space-y-4">
-            <h3 className="font-semibold text-foreground">Pagamento</h3>
-            <div className="flex flex-wrap gap-2">
-              <div className="flex items-center gap-1 px-3 py-1.5 bg-muted rounded-md text-xs text-muted-foreground">
-                <CreditCard className="h-4 w-4" />
-                Cartão
-              </div>
-              <div className="flex items-center gap-1 px-3 py-1.5 bg-muted rounded-md text-xs text-muted-foreground">
-                <span className="font-bold text-green-600">PIX</span>
-              </div>
-            </div>
-            
-            <h3 className="font-semibold text-foreground pt-2">Segurança</h3>
-            <div className="flex flex-wrap gap-2">
-              <div className="flex items-center gap-1 px-3 py-1.5 bg-muted rounded-md text-xs text-muted-foreground">
-                <Lock className="h-4 w-4" />
-                Site Seguro
-              </div>
-              <div className="flex items-center gap-1 px-3 py-1.5 bg-muted rounded-md text-xs text-muted-foreground">
-                <Shield className="h-4 w-4" />
-                Compra Protegida
-              </div>
-              <div className="flex items-center gap-1 px-3 py-1.5 bg-muted rounded-md text-xs text-muted-foreground">
-                <BadgeCheck className="h-4 w-4" />
-                100% Original
-              </div>
             </div>
           </div>
         </div>

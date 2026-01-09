@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Heart, ShoppingCart, Sparkles, Truck } from 'lucide-react';
+import { Heart, ShoppingCart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -15,24 +15,6 @@ interface ProductCardProps {
   onFavoriteToggle?: () => void;
 }
 
-// Check if product was created within last 7 days
-const isNewProduct = (createdAt: string) => {
-  const productDate = new Date(createdAt);
-  const now = new Date();
-  const diffDays = Math.floor((now.getTime() - productDate.getTime()) / (1000 * 60 * 60 * 24));
-  return diffDays <= 7;
-};
-
-// Calculate installments
-const getInstallments = (price: number, maxInstallments: number = 3) => {
-  if (price < 30) return null;
-  const installmentValue = price / maxInstallments;
-  return {
-    count: maxInstallments,
-    value: installmentValue,
-  };
-};
-
 export function ProductCard({ product, isFavorite, onFavoriteToggle }: ProductCardProps) {
   const { addItem } = useCart();
   const { user } = useAuth();
@@ -40,10 +22,6 @@ export function ProductCard({ product, isFavorite, onFavoriteToggle }: ProductCa
   const discountPercentage = product.original_price
     ? Math.round(((product.original_price - product.price) / product.original_price) * 100)
     : 0;
-
-  const isNew = product.created_at ? isNewProduct(product.created_at) : false;
-  const installments = getInstallments(product.price);
-  const hasFreeShipping = product.price >= 150;
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -90,18 +68,11 @@ export function ProductCard({ product, isFavorite, onFavoriteToggle }: ProductCa
           <img
             src={imageUrl}
             alt={product.name}
-            loading="lazy"
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
           />
           
           {/* Badges */}
           <div className="absolute top-3 left-3 flex flex-col gap-2">
-            {isNew && (
-              <Badge className="bg-blue-500 text-white border-0">
-                <Sparkles className="h-3 w-3 mr-1" />
-                Novo
-              </Badge>
-            )}
             {discountPercentage > 0 && (
               <Badge className="bg-warning text-warning-foreground border-0">
                 -{discountPercentage}%
@@ -113,16 +84,6 @@ export function ProductCard({ product, isFavorite, onFavoriteToggle }: ProductCa
               </Badge>
             )}
           </div>
-
-          {/* Free Shipping Badge */}
-          {hasFreeShipping && (
-            <div className="absolute top-3 right-12 opacity-0 group-hover:opacity-100 transition-opacity">
-              <Badge className="bg-green-500 text-white border-0">
-                <Truck className="h-3 w-3 mr-1" />
-                Frete Grátis
-              </Badge>
-            </div>
-          )}
 
           {/* Favorite Button */}
           <Button
@@ -173,13 +134,6 @@ export function ProductCard({ product, isFavorite, onFavoriteToggle }: ProductCa
               </span>
             )}
           </div>
-          
-          {/* Installments */}
-          {installments && (
-            <p className="text-xs text-muted-foreground mt-1">
-              ou {installments.count}x de R$ {installments.value.toFixed(2).replace('.', ',')} sem juros
-            </p>
-          )}
         </CardContent>
       </Card>
     </Link>
