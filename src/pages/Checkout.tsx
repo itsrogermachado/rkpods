@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { ArrowLeft, MapPin, MessageCircle, Check } from 'lucide-react';
+import { ArrowLeft, MapPin, MessageCircle, Check, Store } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -14,7 +14,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
-import { Address } from '@/types';
+import { Address, Zone } from '@/types';
 import { generateWhatsAppMessage, getWhatsAppLink } from '@/lib/whatsapp';
 import { toast } from 'sonner';
 
@@ -35,6 +35,8 @@ type AddressForm = z.infer<typeof addressSchema>;
 export default function Checkout() {
   const [savedAddresses, setSavedAddresses] = useState<Address[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState<string>('new');
+  const [zones, setZones] = useState<Zone[]>([]);
+  const [selectedZoneId, setSelectedZoneId] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cepLoading, setCepLoading] = useState(false);
   const { items, totalPrice, clearCart } = useCart();
@@ -57,10 +59,27 @@ export default function Checkout() {
   }, [items, navigate]);
 
   useEffect(() => {
+    fetchZones();
     if (user) {
       fetchAddresses();
     }
   }, [user]);
+
+  async function fetchZones() {
+    const { data } = await supabase
+      .from('zones')
+      .select('*')
+      .eq('active', true)
+      .order('name');
+
+    if (data) {
+      setZones(data as Zone[]);
+      // Auto-select first zone if only one
+      if (data.length === 1) {
+        setSelectedZoneId(data[0].id);
+      }
+    }
+  }
 
   async function fetchAddresses() {
     if (!user) return;
@@ -101,7 +120,14 @@ export default function Checkout() {
     }
   };
 
+  const selectedZone = zones.find(z => z.id === selectedZoneId);
+
   const handleSubmit = async (formData: AddressForm) => {
+    if (!selectedZoneId) {
+      toast.error('Por favor, selecione uma zona de entrega.');
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -133,7 +159,7 @@ export default function Checkout() {
         address = saved;
       }
 
-      // Create order in database
+      // Create order in database with zone info
       await supabase.from('orders').insert({
         user_id: user?.id || null,
         items: items.map(item => ({
@@ -145,11 +171,13 @@ export default function Checkout() {
         address: address as any,
         total: totalPrice,
         status: 'pending',
+        zone_id: selectedZoneId,
+        zone_name: selectedZone?.name || null,
       });
 
-      // Generate WhatsApp message and redirect
-      const message = generateWhatsAppMessage(items, address, totalPrice);
-      const whatsappLink = getWhatsAppLink(message);
+      // Generate WhatsApp message and redirect to zone's vendor
+      const message = generateWhatsAppMessage(items, address, totalPrice, selectedZone?.name);
+      const whatsappLink = getWhatsAppLink(message, selectedZone!.whatsapp_number);
 
       clearCart();
       toast.success('Pedido enviado! Redirecionando ao WhatsApp...');
@@ -193,8 +221,57 @@ export default function Checkout() {
           <h1 className="text-3xl font-bold mb-8">Checkout</h1>
 
           <div className="grid lg:grid-cols-3 gap-8">
-            {/* Address Form */}
-            <div className="lg:col-span-2">
+            {/* Zone Selection + Address Form */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Zone Selection */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Store className="h-5 w-5" />
+                    Zona de Entrega
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {zones.length === 0 ? (
+                    <p className="text-muted-foreground">Carregando zonas...</p>
+                  ) : (
+                    <RadioGroup
+                      value={selectedZoneId}
+                      onValueChange={setSelectedZoneId}
+                      className="grid gap-3 sm:grid-cols-2"
+                    >
+                      {zones.map(zone => (
+                        <div
+                          key={zone.id}
+                          className={`flex items-center gap-3 p-4 border rounded-lg cursor-pointer transition-all ${
+                            selectedZoneId === zone.id 
+                              ? 'border-primary bg-primary/5 ring-1 ring-primary' 
+                              : 'hover:border-primary/50'
+                          }`}
+                          onClick={() => setSelectedZoneId(zone.id)}
+                        >
+                          <RadioGroupItem value={zone.id} id={zone.id} />
+                          <div className="flex-1">
+                            <Label htmlFor={zone.id} className="font-medium cursor-pointer">
+                              {zone.name}
+                            </Label>
+                          </div>
+                          {selectedZoneId === zone.id && (
+                            <Check className="h-4 w-4 text-primary" />
+                          )}
+                        </div>
+                      ))}
+                    </RadioGroup>
+                  )}
+                  {!selectedZoneId && zones.length > 0 && (
+                    <p className="text-sm text-destructive mt-2">
+                      Selecione uma zona para continuar
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Address Card */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -369,7 +446,7 @@ export default function Checkout() {
                         type="submit"
                         className="w-full gradient-primary"
                         size="lg"
-                        disabled={isSubmitting}
+                        disabled={isSubmitting || !selectedZoneId}
                       >
                         <MessageCircle className="h-5 w-5 mr-2" />
                         {isSubmitting ? 'Processando...' : 'Finalizar pelo WhatsApp'}
@@ -388,7 +465,7 @@ export default function Checkout() {
                       }}
                       className="w-full gradient-primary"
                       size="lg"
-                      disabled={isSubmitting}
+                      disabled={isSubmitting || !selectedZoneId}
                     >
                       <MessageCircle className="h-5 w-5 mr-2" />
                       {isSubmitting ? 'Processando...' : 'Finalizar pelo WhatsApp'}
@@ -428,6 +505,13 @@ export default function Checkout() {
 
                   <hr className="border-border" />
 
+                  {selectedZone && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Zona</span>
+                      <span className="font-medium">{selectedZone.name}</span>
+                    </div>
+                  )}
+
                   <div className="flex justify-between text-lg font-bold">
                     <span>Total</span>
                     <span className="text-primary">
@@ -438,11 +522,10 @@ export default function Checkout() {
                   <div className="bg-muted/50 rounded-lg p-4 text-sm space-y-2">
                     <div className="flex items-center gap-2 text-green-600">
                       <Check className="h-4 w-4" />
-                      <span>Pagamento via WhatsApp</span>
+                      <span>Pagamento na entrega</span>
                     </div>
-                    <p className="text-muted-foreground">
-                      Após finalizar, você será redirecionado ao WhatsApp para confirmar
-                      o pedido e combinar o pagamento.
+                    <p className="text-muted-foreground text-xs">
+                      Finalize pelo WhatsApp e combine o pagamento diretamente com o vendedor.
                     </p>
                   </div>
                 </CardContent>
