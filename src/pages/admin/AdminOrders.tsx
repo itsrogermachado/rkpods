@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Eye, MessageCircle, MapPinned } from 'lucide-react';
+import { Eye, MessageCircle, MapPinned, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -63,6 +63,22 @@ export default function AdminOrders() {
       toast.error('Erro ao atualizar status');
     } else {
       toast.success('Status atualizado');
+      fetchData();
+    }
+  }
+
+  async function handleDelete(orderId: string) {
+    if (!confirm('Tem certeza que deseja excluir este pedido? Esta ação não pode ser desfeita.')) return;
+
+    const { error } = await supabase
+      .from('orders')
+      .delete()
+      .eq('id', orderId);
+
+    if (error) {
+      toast.error('Erro ao excluir pedido');
+    } else {
+      toast.success('Pedido excluído');
       fetchData();
     }
   }
@@ -212,6 +228,16 @@ CEP: ${address.cep}`;
                       title="Ver detalhes"
                     >
                       <Eye className="h-4 w-4" />
+                    </Button>
+
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => handleDelete(order.id)}
+                      title="Excluir pedido"
+                      className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                    >
+                      <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
                 </div>
