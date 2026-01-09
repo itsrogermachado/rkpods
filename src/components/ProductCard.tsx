@@ -74,12 +74,12 @@ export function ProductCard({ product, isFavorite, onFavoriteToggle }: ProductCa
           {/* Badges */}
           <div className="absolute top-3 left-3 flex flex-col gap-2">
             {discountPercentage > 0 && (
-              <Badge className="gradient-warm border-0 text-warning-foreground">
+              <Badge className="bg-warning text-warning-foreground border-0">
                 -{discountPercentage}%
               </Badge>
             )}
             {product.featured && (
-              <Badge className="gradient-primary border-0">
+              <Badge className="bg-primary text-primary-foreground border-0">
                 Destaque
               </Badge>
             )}
@@ -101,7 +101,7 @@ export function ProductCard({ product, isFavorite, onFavoriteToggle }: ProductCa
           <div className="absolute bottom-3 left-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
             <Button
               onClick={handleAddToCart}
-              className="w-full gradient-primary border-0"
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground border-0"
               disabled={product.stock === 0}
             >
               <ShoppingCart className="h-4 w-4 mr-2" />

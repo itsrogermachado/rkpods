@@ -44,9 +44,9 @@ export function FeaturedProducts() {
     return (
       <section className="py-20">
         <div className="container">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Produtos em <span className="text-gradient">Destaque</span>
+        <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
+              Produtos em <span className="text-primary">Destaque</span>
             </h2>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -68,14 +68,14 @@ export function FeaturedProducts() {
       <div className="container">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-12">
           <div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-2">
-              Produtos em <span className="text-gradient">Destaque</span>
+            <h2 className="text-3xl md:text-4xl font-bold mb-2 text-foreground">
+              Produtos em <span className="text-primary">Destaque</span>
             </h2>
             <p className="text-muted-foreground">
               Os mais vendidos da semana
             </p>
           </div>
-          <Button asChild variant="outline" className="hidden md:flex border-2">
+          <Button asChild variant="outline" className="hidden md:flex border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground">
             <Link to="/produtos">
               Ver Todos
               <ArrowRight className="ml-2 h-4 w-4" />
@@ -96,7 +96,7 @@ export function FeaturedProducts() {
         </div>
 
         <div className="mt-10 text-center md:hidden">
-          <Button asChild size="lg" className="gradient-primary text-white">
+          <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground">
             <Link to="/produtos">
               Ver Todos os Produtos
               <ArrowRight className="ml-2 h-4 w-4" />
