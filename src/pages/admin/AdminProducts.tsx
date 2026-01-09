@@ -13,6 +13,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { supabase } from '@/integrations/supabase/client';
 import { Product, Category, Zone, ZoneStock } from '@/types';
 import { toast } from 'sonner';
+import { ImageUpload } from '@/components/admin/ImageUpload';
 
 interface ProductWithStock extends Product {
   zoneStocks: ZoneStock[];
@@ -25,6 +26,7 @@ export default function AdminProducts() {
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<ProductWithStock | null>(null);
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [formData, setFormData] = useState({
     name: '',
     slug: '',
@@ -35,8 +37,6 @@ export default function AdminProducts() {
     brand: '',
     flavor: '',
     nicotine_level: '',
-    images: '',
-    featured: false,
     active: true,
   });
   const [zoneStockData, setZoneStockData] = useState<Record<string, string>>({});
@@ -107,10 +107,9 @@ export default function AdminProducts() {
       brand: '',
       flavor: '',
       nicotine_level: '',
-      images: '',
-      featured: false,
       active: true,
     });
+    setImageUrls([]);
     // Initialize zone stocks to 0
     const initialStocks: Record<string, string> = {};
     zones.forEach(z => { initialStocks[z.id] = '0'; });
@@ -130,10 +129,9 @@ export default function AdminProducts() {
       brand: product.brand || '',
       flavor: product.flavor || '',
       nicotine_level: product.nicotine_level || '',
-      images: product.images?.join(', ') || '',
-      featured: product.featured,
       active: product.active,
     });
+    setImageUrls(product.images || []);
     // Load existing zone stocks
     const stocks: Record<string, string> = {};
     zones.forEach(z => {
@@ -161,8 +159,7 @@ export default function AdminProducts() {
       flavor: formData.flavor || null,
       nicotine_level: formData.nicotine_level || null,
       stock: totalStock, // Keep for backward compatibility
-      images: formData.images ? formData.images.split(',').map(s => s.trim()).filter(Boolean) : [],
-      featured: formData.featured,
+      images: imageUrls,
       active: formData.active,
     };
 
@@ -413,33 +410,20 @@ export default function AdminProducts() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="images">Imagens (URLs separadas por vírgula)</Label>
-                <Textarea
-                  id="images"
-                  value={formData.images}
-                  onChange={e => setFormData(prev => ({ ...prev, images: e.target.value }))}
-                  placeholder="https://exemplo.com/img1.jpg, https://exemplo.com/img2.jpg"
-                  rows={2}
+                <Label>Imagens do Produto</Label>
+                <ImageUpload 
+                  images={imageUrls} 
+                  onImagesChange={setImageUrls} 
                 />
               </div>
 
-              <div className="flex items-center gap-6">
-                <div className="flex items-center gap-2">
-                  <Switch
-                    id="featured"
-                    checked={formData.featured}
-                    onCheckedChange={v => setFormData(prev => ({ ...prev, featured: v }))}
-                  />
-                  <Label htmlFor="featured">Destaque</Label>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Switch
-                    id="active"
-                    checked={formData.active}
-                    onCheckedChange={v => setFormData(prev => ({ ...prev, active: v }))}
-                  />
-                  <Label htmlFor="active">Ativo</Label>
-                </div>
+              <div className="flex items-center gap-2">
+                <Switch
+                  id="active"
+                  checked={formData.active}
+                  onCheckedChange={v => setFormData(prev => ({ ...prev, active: v }))}
+                />
+                <Label htmlFor="active">Ativo</Label>
               </div>
 
               <Button type="submit" className="w-full gradient-primary">

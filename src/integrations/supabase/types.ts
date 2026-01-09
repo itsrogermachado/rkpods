@@ -346,6 +346,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_best_selling_products: {
+        Args: { limit_count?: number }
+        Returns: {
+          product_id: string
+          total_sold: number
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

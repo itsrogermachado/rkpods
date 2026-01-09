@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, TrendingUp } from 'lucide-react';
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
 import { Button } from '@/components/ui/button';
@@ -23,33 +23,69 @@ export function FeaturedCarousel() {
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
 
   useEffect(() => {
-    fetchFeaturedProducts();
+    fetchBestSellingProducts();
     if (user) {
       fetchFavorites();
     }
   }, [user]);
 
-  const fetchFeaturedProducts = async () => {
+  const fetchBestSellingProducts = async () => {
     try {
-      const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .eq('featured', true)
-        .eq('active', true)
-        .limit(12);
+      // First, try to get best selling products from orders
+      const { data: bestSellers, error: bsError } = await supabase
+        .rpc('get_best_selling_products', { limit_count: 12 });
 
-      if (error) throw error;
+      if (bsError) {
+        console.error('Error fetching best sellers:', bsError);
+      }
 
-      setProducts((data || []).map(p => ({
-        ...p,
-        price: Number(p.price),
-        original_price: p.original_price ? Number(p.original_price) : null,
-        images: p.images || [],
-        featured: p.featured ?? false,
-        active: p.active ?? true,
-      })));
+      if (bestSellers && bestSellers.length > 0) {
+        // Get product details for best sellers
+        const productIds = bestSellers.map((bs: { product_id: string }) => bs.product_id);
+        const { data: productsData, error } = await supabase
+          .from('products')
+          .select('*')
+          .in('id', productIds)
+          .eq('active', true);
+
+        if (error) throw error;
+
+        // Order products by sales rank
+        const orderedProducts = productIds
+          .map((id: string) => productsData?.find(p => p.id === id))
+          .filter(Boolean)
+          .map(p => ({
+            ...p!,
+            price: Number(p!.price),
+            original_price: p!.original_price ? Number(p!.original_price) : null,
+            images: p!.images || [],
+            featured: p!.featured ?? false,
+            active: p!.active ?? true,
+          }));
+
+        setProducts(orderedProducts as Product[]);
+      } else {
+        // Fallback: get most recent products if no sales data
+        const { data, error } = await supabase
+          .from('products')
+          .select('*')
+          .eq('active', true)
+          .order('created_at', { ascending: false })
+          .limit(12);
+
+        if (error) throw error;
+
+        setProducts((data || []).map(p => ({
+          ...p,
+          price: Number(p.price),
+          original_price: p.original_price ? Number(p.original_price) : null,
+          images: p.images || [],
+          featured: p.featured ?? false,
+          active: p.active ?? true,
+        })));
+      }
     } catch (error) {
-      console.error('Error fetching featured products:', error);
+      console.error('Error fetching products:', error);
     } finally {
       setLoading(false);
     }
@@ -96,10 +132,11 @@ export function FeaturedCarousel() {
       <div className="container">
         <div className="flex items-center justify-between mb-10">
           <div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-2 text-foreground">
-              Produtos em <span className="text-primary">Destaque</span>
+            <h2 className="text-3xl md:text-4xl font-bold mb-2 text-foreground flex items-center gap-3">
+              <TrendingUp className="h-8 w-8 text-primary" />
+              Mais <span className="text-primary">Vendidos</span>
             </h2>
-            <p className="text-muted-foreground">Os mais vendidos da semana</p>
+            <p className="text-muted-foreground">Os produtos favoritos dos nossos clientes</p>
           </div>
           <div className="hidden md:flex items-center gap-2">
             <Button
