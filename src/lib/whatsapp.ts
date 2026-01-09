@@ -32,5 +32,5 @@ Por favor, confirme a disponibilidade e o prazo de entrega.`;
 }
 
 export function getWhatsAppLink(message: string, whatsappNumber: string): string {
-  return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+  return `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodeURIComponent(message)}`;
 }

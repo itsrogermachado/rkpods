@@ -189,8 +189,26 @@ export default function Checkout() {
         // Em mobile, usar location.href para ativar deep link corretamente
         window.location.href = whatsappLink;
       } else {
-        // Em desktop, abrir nova aba
-        window.open(whatsappLink, '_blank');
+        // Em desktop, abrir nova aba com fallback
+        const newWindow = window.open(whatsappLink, '_blank');
+        
+        // Se popup foi bloqueado, mostrar link manual
+        if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+          toast.info(
+            <div className="flex flex-col gap-2">
+              <p>O navegador bloqueou a abertura automática.</p>
+              <a 
+                href={whatsappLink} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="underline text-primary font-medium"
+              >
+                Clique aqui para abrir o WhatsApp
+              </a>
+            </div>,
+            { duration: 15000 }
+          );
+        }
         navigate('/');
       }
     } catch (error) {
