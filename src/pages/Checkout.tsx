@@ -133,17 +133,19 @@ export default function Checkout() {
 
   // Calculate availability for each item
   const itemsAvailability = useMemo<ItemAvailability[]>(() => {
-    if (!selectedZoneId || zoneStock.length === 0) {
-      // If no zone selected or no stock data, assume all available
+    // If no zone selected, mark as unavailable to force zone selection
+    if (!selectedZoneId) {
       return items.map(item => ({
         productId: item.product.id,
         productName: item.product.name,
         requested: item.quantity,
-        available: item.product.stock, // Use global stock as fallback
-        isAvailable: true,
+        available: 0,
+        isAvailable: false,
       }));
     }
 
+    // Check each product against zone stock
+    // If product has no stock entry for this zone, it's NOT available (stock = 0)
     return items.map(item => {
       const stockEntry = zoneStock.find(zs => zs.product_id === item.product.id);
       const availableStock = stockEntry?.stock ?? 0;
