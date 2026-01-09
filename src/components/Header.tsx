@@ -1,32 +1,19 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, User, Menu, Search, Heart, Settings } from 'lucide-react';
+import { User, Menu, Heart, Settings } from 'lucide-react';
 import { useAdmin } from '@/hooks/useAdmin';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { MiniCart } from '@/components/MiniCart';
+import { CategoryMenu } from '@/components/CategoryMenu';
+import { SearchAutocomplete } from '@/components/SearchAutocomplete';
 
 export function Header() {
-  const [searchQuery, setSearchQuery] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { totalItems } = useCart();
   const { user } = useAuth();
   const { isAdmin } = useAdmin();
-  const navigate = useNavigate();
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      // Scroll to products section on homepage
-      const productsSection = document.getElementById('todos-produtos');
-      if (productsSection) {
-        productsSection.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -36,20 +23,11 @@ export function Header() {
           <img src="/logo.png" alt="RKPODS" className="h-10 w-auto" />
         </Link>
 
+        {/* Category Menu - Desktop */}
+        <CategoryMenu />
 
-        {/* Search Bar */}
-        <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-sm">
-          <div className="relative w-full">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Buscar produtos..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 pr-4"
-            />
-          </div>
-        </form>
+        {/* Search Bar with Autocomplete */}
+        <SearchAutocomplete className="hidden md:flex flex-1 max-w-sm" />
 
         {/* Action Buttons */}
         <div className="flex items-center gap-2">
@@ -69,16 +47,15 @@ export function Header() {
             </Button>
           )}
 
-          <Button variant="ghost" size="icon" asChild className="relative">
-            <Link to="/carrinho">
-              <ShoppingCart className="h-5 w-5" />
-              {totalItems > 0 && (
-                <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs gradient-primary border-0">
-                  {totalItems}
-                </Badge>
-              )}
-            </Link>
-          </Button>
+          {/* Mini Cart on Hover */}
+          <div className="hidden md:block">
+            <MiniCart />
+          </div>
+
+          {/* Mobile Cart - Direct Link */}
+          <Link to="/carrinho" className="md:hidden">
+            <MiniCart />
+          </Link>
 
           <Button variant="ghost" size="icon" asChild className="hidden md:flex">
             <Link to={user ? '/minha-conta' : '/auth'}>
@@ -96,19 +73,7 @@ export function Header() {
             <SheetContent side="right" className="w-80">
               <div className="flex flex-col gap-6 mt-6">
                 {/* Mobile Search */}
-                <form onSubmit={handleSearch}>
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      type="search"
-                      placeholder="Buscar produtos..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-9"
-                    />
-                  </div>
-                </form>
-
+                <SearchAutocomplete onClose={() => setMobileMenuOpen(false)} />
 
                 {/* Mobile Account Links */}
                 <div className="flex flex-col gap-4">
