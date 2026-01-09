@@ -26,10 +26,10 @@ export default function AdminLayout() {
             to={item.href}
             onClick={() => setMobileOpen(false)}
             className={cn(
-              'flex items-center gap-3 px-4 py-3 rounded-lg transition-colors',
+              'flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium',
               isActive
-                ? 'bg-primary text-primary-foreground'
-                : 'hover:bg-muted'
+                ? 'gradient-primary text-white shadow-lg shadow-primary/25'
+                : 'hover:bg-muted text-muted-foreground hover:text-foreground'
             )}
           >
             <item.icon className="h-5 w-5" />
@@ -41,9 +41,9 @@ export default function AdminLayout() {
   );
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-muted/30">
       {/* Header */}
-      <header className="border-b bg-background sticky top-0 z-50">
+      <header className="border-b bg-card sticky top-0 z-50 shadow-sm">
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-4">
             <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
@@ -52,17 +52,18 @@ export default function AdminLayout() {
                   <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-64">
-                <div className="mt-6">
-                  <NavContent />
+              <SheetContent side="left" className="w-72 p-6">
+                <div className="mb-8">
+                  <span className="text-xl font-bold text-gradient">RKPODS Admin</span>
                 </div>
+                <NavContent />
               </SheetContent>
             </Sheet>
             <Link to="/admin" className="text-xl font-bold text-gradient">
               RKPODS Admin
             </Link>
           </div>
-          <Button variant="outline" size="sm" asChild>
+          <Button variant="outline" size="sm" asChild className="border-2">
             <Link to="/">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Voltar à Loja
@@ -73,12 +74,12 @@ export default function AdminLayout() {
 
       <div className="flex flex-1">
         {/* Sidebar - Desktop */}
-        <aside className="hidden lg:block w-64 border-r bg-muted/30 p-4">
+        <aside className="hidden lg:block w-72 border-r bg-card p-6">
           <NavContent />
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 p-6">
+        <main className="flex-1 p-6 md:p-8">
           <Outlet />
         </main>
       </div>
