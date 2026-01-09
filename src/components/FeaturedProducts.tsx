@@ -42,16 +42,16 @@ export function FeaturedProducts() {
 
   if (loading) {
     return (
-      <section className="py-16">
+      <section className="py-20">
         <div className="container">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               Produtos em <span className="text-gradient">Destaque</span>
             </h2>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="aspect-square bg-muted animate-pulse rounded-lg" />
+              <div key={i} className="aspect-square bg-muted animate-pulse rounded-2xl" />
             ))}
           </div>
         </div>
@@ -64,9 +64,9 @@ export function FeaturedProducts() {
   }
 
   return (
-    <section className="py-16">
+    <section className="py-20 bg-background">
       <div className="container">
-        <div className="flex items-center justify-between mb-12">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-12">
           <div>
             <h2 className="text-3xl md:text-4xl font-bold mb-2">
               Produtos em <span className="text-gradient">Destaque</span>
@@ -75,7 +75,7 @@ export function FeaturedProducts() {
               Os mais vendidos da semana
             </p>
           </div>
-          <Button asChild variant="outline" className="hidden md:flex">
+          <Button asChild variant="outline" className="hidden md:flex border-2">
             <Link to="/produtos">
               Ver Todos
               <ArrowRight className="ml-2 h-4 w-4" />
@@ -83,7 +83,7 @@ export function FeaturedProducts() {
           </Button>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {products.map((product, index) => (
             <div
               key={product.id}
@@ -95,8 +95,8 @@ export function FeaturedProducts() {
           ))}
         </div>
 
-        <div className="mt-8 text-center md:hidden">
-          <Button asChild>
+        <div className="mt-10 text-center md:hidden">
+          <Button asChild size="lg" className="gradient-primary text-white">
             <Link to="/produtos">
               Ver Todos os Produtos
               <ArrowRight className="ml-2 h-4 w-4" />

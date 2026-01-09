@@ -24,10 +24,6 @@ export function Header() {
 
   const navLinks = [
     { href: '/produtos', label: 'Produtos' },
-    { href: '/produtos?categoria=pods', label: 'Pods' },
-    { href: '/produtos?categoria=essencias', label: 'Essências' },
-    { href: '/produtos?categoria=dispositivos', label: 'Dispositivos' },
-    { href: '/produtos?categoria=acessorios', label: 'Acessórios' },
   ];
 
   return (

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Package, FolderTree, ShoppingCart, Users, TrendingUp } from 'lucide-react';
+import { Package, FolderTree, ShoppingCart, Clock, TrendingUp } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -54,49 +54,52 @@ export default function Dashboard() {
       title: 'Produtos',
       value: stats.products,
       icon: Package,
-      color: 'text-blue-500',
+      gradient: 'gradient-primary',
     },
     {
       title: 'Categorias',
       value: stats.categories,
       icon: FolderTree,
-      color: 'text-green-500',
+      gradient: 'bg-secondary',
     },
     {
       title: 'Pedidos',
       value: stats.orders,
       icon: ShoppingCart,
-      color: 'text-purple-500',
+      gradient: 'bg-accent',
     },
     {
       title: 'Pendentes',
       value: stats.pendingOrders,
-      icon: Users,
-      color: 'text-orange-500',
+      icon: Clock,
+      gradient: 'bg-warning',
     },
     {
       title: 'Receita Total',
       value: `R$ ${stats.revenue.toFixed(2).replace('.', ',')}`,
       icon: TrendingUp,
-      color: 'text-primary',
+      gradient: 'bg-success',
     },
   ];
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-8">Dashboard</h1>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
+        <p className="text-muted-foreground mt-1">Visão geral da sua loja</p>
+      </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {statCards.map(stat => (
-          <Card key={stat.title}>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
+          <Card key={stat.title} className="overflow-hidden border-0 shadow-lg">
+            <div className={`${stat.gradient} p-4`}>
+              <stat.icon className="h-8 w-8 text-white" />
+            </div>
+            <CardContent className="pt-4">
+              <p className="text-sm font-medium text-muted-foreground">
                 {stat.title}
-              </CardTitle>
-              <stat.icon className={`h-5 w-5 ${stat.color}`} />
-            </CardHeader>
-            <CardContent>
-              <p className="text-2xl font-bold">
+              </p>
+              <p className="text-2xl font-bold text-foreground mt-1">
                 {loading ? '...' : stat.value}
               </p>
             </CardContent>
