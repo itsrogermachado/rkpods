@@ -1,7 +1,6 @@
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { HeroBanner } from '@/components/HeroBanner';
-import { CategorySection } from '@/components/CategorySection';
 import { FeaturedProducts } from '@/components/FeaturedProducts';
 import { PromoBanner, CTABanner } from '@/components/PromoBanner';
 import { AgeVerificationModal } from '@/components/AgeVerificationModal';
@@ -14,7 +13,6 @@ const Index = () => {
       <main className="flex-1">
         <HeroBanner />
         <PromoBanner />
-        <CategorySection />
         <FeaturedProducts />
         <CTABanner />
       </main>
