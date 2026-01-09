@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, User, Menu, X, Search, Heart } from 'lucide-react';
+import { ShoppingCart, User, Menu, Search, Heart, Settings } from 'lucide-react';
+import { useAdmin } from '@/hooks/useAdmin';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -13,6 +14,7 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { totalItems } = useCart();
   const { user } = useAuth();
+  const { isAdmin } = useAdmin();
   const navigate = useNavigate();
 
   const handleSearch = (e: React.FormEvent) => {
@@ -63,6 +65,14 @@ export function Header() {
 
         {/* Action Buttons */}
         <div className="flex items-center gap-2">
+          {isAdmin && (
+            <Button variant="ghost" size="icon" asChild className="hidden md:flex">
+              <Link to="/admin">
+                <Settings className="h-5 w-5" />
+              </Link>
+            </Button>
+          )}
+
           {user && (
             <Button variant="ghost" size="icon" asChild className="hidden md:flex">
               <Link to="/favoritos">
@@ -129,6 +139,16 @@ export function Header() {
 
                 {/* Mobile Account Links */}
                 <div className="flex flex-col gap-4">
+                  {isAdmin && (
+                    <Link
+                      to="/admin"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center gap-3 text-lg font-medium hover:text-primary transition-colors"
+                    >
+                      <Settings className="h-5 w-5" />
+                      Painel Admin
+                    </Link>
+                  )}
                   <Link
                     to={user ? '/minha-conta' : '/auth'}
                     onClick={() => setMobileMenuOpen(false)}
