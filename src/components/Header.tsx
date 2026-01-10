@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 export function Header() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -53,6 +54,8 @@ export function Header() {
 
         {/* Action Buttons */}
         <div className="flex items-center gap-2">
+          <ThemeToggle />
+          
           {isAdmin && (
             <Button variant="ghost" size="icon" asChild className="hidden md:flex">
               <Link to="/admin">
