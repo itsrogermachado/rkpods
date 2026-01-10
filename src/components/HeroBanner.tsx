@@ -12,7 +12,7 @@ export function HeroBanner() {
   };
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-background via-background to-muted py-16 md:py-24">
+    <section className="relative overflow-hidden bg-gradient-to-br from-background via-background to-muted pt-16 md:pt-24 pb-8">
       {/* Efeito de Fumaça Animada */}
       <SmokeEffect />
 

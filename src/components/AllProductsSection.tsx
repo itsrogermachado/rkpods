@@ -106,7 +106,7 @@ export function AllProductsSection() {
 
   if (loading) {
     return (
-      <section id="todos-produtos" className="relative py-16">
+      <section id="todos-produtos" className="relative pt-8 pb-16">
         <div className="container">
           <div className="text-center mb-10">
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-2 text-foreground">
@@ -124,7 +124,7 @@ export function AllProductsSection() {
   }
 
   return (
-    <section id="todos-produtos" className="relative py-16 overflow-hidden">
+    <section id="todos-produtos" className="relative pt-8 pb-16 overflow-hidden">
       {/* Fumaça decorativa de fundo */}
       <div className="absolute inset-0 pointer-events-none opacity-30">
         <div 
