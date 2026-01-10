@@ -65,6 +65,11 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        vapor: {
+          light: "hsl(var(--vapor-light))",
+          medium: "hsl(var(--vapor-medium))",
+          dark: "hsl(var(--vapor-dark))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -96,6 +101,19 @@ export default {
           "0%, 100%": { boxShadow: "0 0 20px hsl(var(--primary) / 0.3)" },
           "50%": { boxShadow: "0 0 40px hsl(var(--primary) / 0.5)" },
         },
+        "smoke-rise": {
+          "0%": { transform: "translateY(0) scale(1)", opacity: "0.3" },
+          "50%": { transform: "translateY(-30px) scale(1.1)", opacity: "0.5" },
+          "100%": { transform: "translateY(-60px) scale(1)", opacity: "0.2" },
+        },
+        "smoke-drift": {
+          "0%, 100%": { transform: "translateX(0)", opacity: "0.4" },
+          "50%": { transform: "translateX(30px)", opacity: "0.5" },
+        },
+        "vapor-pulse": {
+          "0%, 100%": { opacity: "0.3", transform: "scale(1)" },
+          "50%": { opacity: "0.6", transform: "scale(1.1)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -104,6 +122,9 @@ export default {
         "scale-in": "scale-in 0.3s ease-out",
         "slide-in-right": "slide-in-right 0.4s ease-out",
         "pulse-glow": "pulse-glow 2s ease-in-out infinite",
+        "smoke-rise": "smoke-rise 10s ease-in-out infinite",
+        "smoke-drift": "smoke-drift 15s ease-in-out infinite",
+        "vapor-pulse": "vapor-pulse 6s ease-in-out infinite",
       },
       fontFamily: {
         sans: ["Inter", "system-ui", "sans-serif"],

@@ -63,7 +63,7 @@ export function ProductCard({ product, isFavorite, onFavoriteToggle }: ProductCa
 
   return (
     <Link to={`/produto/${product.slug}`}>
-      <Card className="group overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+      <Card className="group overflow-hidden border border-border/50 bg-card/80 backdrop-blur-sm shadow-lg shadow-primary/5 hover:shadow-xl hover:shadow-primary/10 hover:bg-card transition-all duration-500 hover:-translate-y-2">
         <div className="relative aspect-square overflow-hidden bg-muted">
           <img
             src={imageUrl}
@@ -90,7 +90,7 @@ export function ProductCard({ product, isFavorite, onFavoriteToggle }: ProductCa
             variant="secondary"
             size="icon"
             onClick={handleFavoriteClick}
-            className="absolute top-3 right-3 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+            className="absolute top-3 right-3 rounded-full opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm bg-secondary/80"
           >
             <Heart
               className={`h-4 w-4 ${isFavorite ? 'fill-accent text-accent' : ''}`}
@@ -101,13 +101,16 @@ export function ProductCard({ product, isFavorite, onFavoriteToggle }: ProductCa
           <div className="absolute bottom-3 left-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
             <Button
               onClick={handleAddToCart}
-              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground border-0"
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground border-0 backdrop-blur-sm"
               disabled={product.stock === 0}
             >
               <ShoppingCart className="h-4 w-4 mr-2" />
               {product.stock === 0 ? 'Esgotado' : 'Adicionar'}
             </Button>
           </div>
+
+          {/* Overlay de vapor sutil no hover */}
+          <div className="absolute inset-0 bg-gradient-to-t from-secondary/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
         </div>
 
         <CardContent className="p-4">
