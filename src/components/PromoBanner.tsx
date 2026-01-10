@@ -1,18 +1,58 @@
 import { Button } from '@/components/ui/button';
 import { Truck, Shield, Clock, MessageCircle } from 'lucide-react';
 export function PromoBanner() {
-  return <section className="relative py-12 overflow-hidden rounded-none shadow-none bg-muted border-muted border-8">
-      {/* Fumaça decorativa sutil */}
-      <div className="absolute inset-0 pointer-events-none opacity-40">
-        <div className="absolute top-0 left-1/4 w-64 h-64 rounded-full animate-smoke-drift" style={{
-        background: 'radial-gradient(ellipse, hsl(187 85% 48% / 0.1), transparent 70%)',
-        filter: 'blur(30px)'
-      }} />
-        <div className="absolute bottom-0 right-1/4 w-48 h-48 rounded-full animate-vapor-pulse" style={{
-        background: 'radial-gradient(ellipse, hsl(187 70% 55% / 0.1), transparent 70%)',
-        filter: 'blur(25px)',
-        animationDelay: '2s'
-      }} />
+  return <section className="relative py-12 overflow-hidden bg-gradient-to-br from-background via-background to-muted">
+      {/* Camadas de fumaça adaptativas */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {/* Camada 1 - Grande à esquerda */}
+        <div 
+          className="absolute -top-10 left-0 w-72 h-72 rounded-full animate-smoke-drift"
+          style={{ 
+            background: 'radial-gradient(ellipse, hsl(var(--smoke-primary) / 0.35), transparent 60%)',
+            filter: 'blur(25px)',
+            animationDelay: '0s' 
+          }} 
+        />
+        
+        {/* Camada 2 - Direita */}
+        <div 
+          className="absolute top-0 right-0 w-64 h-64 rounded-full animate-vapor-pulse"
+          style={{ 
+            background: 'radial-gradient(ellipse, hsl(var(--smoke-secondary) / 0.30), transparent 55%)',
+            filter: 'blur(30px)',
+            animationDelay: '1s' 
+          }} 
+        />
+        
+        {/* Camada 3 - Centro */}
+        <div 
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full animate-smoke-breathe"
+          style={{ 
+            background: 'radial-gradient(ellipse, hsl(var(--smoke-accent) / 0.30), transparent 50%)',
+            filter: 'blur(35px)',
+            animationDelay: '2s' 
+          }} 
+        />
+        
+        {/* Camada 4 - Partícula menor */}
+        <div 
+          className="absolute bottom-0 left-1/3 w-48 h-48 rounded-full animate-smoke-swirl"
+          style={{ 
+            background: 'radial-gradient(ellipse, hsl(var(--smoke-primary) / 0.40), transparent 65%)',
+            filter: 'blur(20px)',
+            animationDelay: '3s' 
+          }} 
+        />
+        
+        {/* Camada 5 - Partícula à direita */}
+        <div 
+          className="absolute bottom-0 right-1/4 w-56 h-56 rounded-full animate-smoke-rise"
+          style={{ 
+            background: 'radial-gradient(ellipse, hsl(var(--smoke-secondary) / 0.35), transparent 60%)',
+            filter: 'blur(25px)',
+            animationDelay: '4s' 
+          }} 
+        />
       </div>
 
       <div className="container relative z-10">
