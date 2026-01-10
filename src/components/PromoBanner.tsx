@@ -129,7 +129,7 @@ export function CTABanner() {
             Fale conosco pelo WhatsApp! Temos muito mais produtos disponíveis e podemos te ajudar a encontrar o pod perfeito.
           </p>
           <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground text-lg px-8 shadow-lg shadow-primary/30">
-            <a href="https://wa.me/5521979265042" target="_blank" rel="noopener noreferrer">
+            <a href="https://wa.me/5521965206974" target="_blank" rel="noopener noreferrer">
               <MessageCircle className="mr-2 h-5 w-5" />
               Chamar no WhatsApp
             </a>

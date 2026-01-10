@@ -50,7 +50,7 @@ export function Footer() {
                 <Instagram className="h-5 w-5" />
               </a>
               <a
-                href="https://wa.me/5521979265042"
+                href="https://wa.me/5521965206974"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 rounded-full bg-muted text-muted-foreground hover:text-primary hover:bg-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all duration-300"
@@ -82,12 +82,12 @@ export function Footer() {
             <h3 className="font-semibold text-foreground">Contato</h3>
             <div className="flex flex-col gap-2 text-sm text-muted-foreground">
               <a
-                href="https://wa.me/5521979265042"
+                href="https://wa.me/5521965206974"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-primary transition-colors"
               >
-                WhatsApp: (21) 97926-5042
+                WhatsApp: (21) 96520-6974
               </a>
               <p>Atendimento: Seg à Sex, 9h às 18h</p>
             </div>
