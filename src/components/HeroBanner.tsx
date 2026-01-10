@@ -23,7 +23,7 @@ export function HeroBanner() {
               <Sparkles className="h-4 w-4" />
               Novidades toda semana
             </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-white leading-tight">
               Os melhores
               <br />
               <span className="text-primary">Pods & Essências</span>
