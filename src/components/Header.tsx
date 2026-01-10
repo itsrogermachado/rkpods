@@ -31,7 +31,7 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 overflow-hidden">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/90 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 overflow-hidden">
       {/* Vapor glow sutil no header */}
       <div className="absolute inset-0 pointer-events-none">
         <div 
@@ -54,7 +54,7 @@ export function Header() {
       <div className="container flex h-16 items-center justify-between gap-4">
         {/* Logo */}
         <Link to="/" className="flex items-center">
-          <img src="/logo.png" alt="RKPODS" className="h-10 w-auto" />
+          <img src="/logo.png" alt="RKPODS" className="h-10 w-auto drop-shadow-[0_0_15px_hsl(var(--primary)/0.5)] hover:drop-shadow-[0_0_25px_hsl(var(--primary)/0.7)] transition-all duration-300" />
         </Link>
 
 

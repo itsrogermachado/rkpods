@@ -66,7 +66,7 @@ export function ProductCard({ product, isFavorite, onFavoriteToggle }: ProductCa
 
   return (
     <Link to={`/produto/${product.slug}`}>
-      <Card className="group relative overflow-hidden border border-border/50 bg-card/80 backdrop-blur-sm shadow-lg shadow-primary/5 hover:shadow-xl hover:shadow-primary/10 hover:bg-card transition-all duration-500 hover:-translate-y-2 card-glow">
+      <Card className="group relative overflow-hidden border border-border/50 bg-card/80 backdrop-blur-sm shadow-lg shadow-primary/20 hover:shadow-2xl hover:shadow-primary/40 hover:bg-card transition-all duration-500 hover:-translate-y-2 card-glow border-glow">
         {/* Smoke effect on hover */}
         <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-20">
           <div 
@@ -78,7 +78,7 @@ export function ProductCard({ product, isFavorite, onFavoriteToggle }: ProductCa
           />
         </div>
 
-        <div className="relative aspect-square overflow-hidden bg-muted image-zoom">
+        <div className="relative aspect-square overflow-hidden bg-muted image-zoom shine-effect">
           <img
             src={imageUrl}
             alt={product.name}

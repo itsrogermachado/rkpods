@@ -3,7 +3,7 @@ import { Instagram, MessageCircle } from 'lucide-react';
 
 export function Footer() {
   return (
-    <footer className="relative border-t bg-card overflow-hidden">
+    <footer className="relative border-t bg-card/80 backdrop-blur-xl overflow-hidden">
       {/* Fumaça decorativa subindo do footer */}
       <div className="absolute inset-0 pointer-events-none">
         <div 
@@ -45,7 +45,7 @@ export function Footer() {
                 href="https://instagram.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-full bg-muted text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
+                className="p-2 rounded-full bg-muted text-muted-foreground hover:text-primary hover:bg-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all duration-300"
               >
                 <Instagram className="h-5 w-5" />
               </a>
@@ -53,7 +53,7 @@ export function Footer() {
                 href="https://wa.me/5521979265042"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-full bg-muted text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
+                className="p-2 rounded-full bg-muted text-muted-foreground hover:text-primary hover:bg-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all duration-300"
               >
                 <MessageCircle className="h-5 w-5" />
               </a>
@@ -65,13 +65,13 @@ export function Footer() {
           <div className="space-y-4">
             <h3 className="font-semibold text-foreground">Minha Conta</h3>
             <nav className="flex flex-col gap-2">
-              <Link to="/minha-conta" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+              <Link to="/minha-conta" className="text-sm text-muted-foreground hover:text-primary transition-colors link-glow inline-block">
                 Meus Pedidos
               </Link>
-              <Link to="/favoritos" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+              <Link to="/favoritos" className="text-sm text-muted-foreground hover:text-primary transition-colors link-glow inline-block">
                 Favoritos
               </Link>
-              <Link to="/minha-conta" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+              <Link to="/minha-conta" className="text-sm text-muted-foreground hover:text-primary transition-colors link-glow inline-block">
                 Meus Endereços
               </Link>
             </nav>

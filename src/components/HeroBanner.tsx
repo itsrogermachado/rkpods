@@ -24,10 +24,10 @@ export function HeroBanner() {
               <Sparkles className="h-4 w-4" />
               Novidades toda semana
             </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground leading-tight">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground leading-tight text-glow">
               Os melhores
               <br />
-              <span className="text-primary">Pods & Essências</span>
+              <span className="text-gradient-primary">Pods & Essências</span>
             </h1>
             <p className="text-lg text-muted-foreground max-w-md mx-auto md:mx-0">
               Qualidade e variedade que você merece. Entrega rápida para todo o Brasil.
@@ -36,7 +36,7 @@ export function HeroBanner() {
               <Button 
                 size="lg" 
                 onClick={scrollToProducts}
-                className="bg-primary hover:bg-primary/90 text-primary-foreground text-lg px-8 shadow-lg shadow-primary/30"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground text-lg px-8 shadow-lg shadow-primary/30 btn-premium shine-effect"
               >
                 Ver Produtos
                 <ArrowRight className="ml-2 h-5 w-5" />

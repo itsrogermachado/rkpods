@@ -57,43 +57,43 @@ export function PromoBanner() {
 
       <div className="container relative z-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-white">
-          <div className="flex flex-col items-center text-center gap-3">
-            <div className="p-3 rounded-full bg-primary/30 border border-primary/50 backdrop-blur-sm">
-              <Truck className="h-6 w-6 text-primary" />
+          <div className="flex flex-col items-center text-center gap-3 group">
+            <div className="p-3 rounded-full bg-primary/30 border border-primary/50 backdrop-blur-sm icon-bounce group-hover:bg-primary/40 transition-all duration-300">
+              <Truck className="h-6 w-6 text-primary group-hover:scale-110 transition-transform" />
             </div>
             <div>
-              <p className="font-semibold text-primary">Entrega Rápida</p>
-              <p className="text-sm text-primary">Rio de Janeiro</p>
+              <p className="font-semibold text-primary text-glow">Entrega Rápida</p>
+              <p className="text-sm text-muted-foreground">Rio de Janeiro</p>
             </div>
           </div>
           
-          <div className="flex flex-col items-center text-center gap-3">
-            <div className="p-3 rounded-full bg-primary/30 border border-primary/50 backdrop-blur-sm">
-              <Shield className="h-6 w-6 text-primary" />
+          <div className="flex flex-col items-center text-center gap-3 group">
+            <div className="p-3 rounded-full bg-primary/30 border border-primary/50 backdrop-blur-sm icon-bounce group-hover:bg-primary/40 transition-all duration-300">
+              <Shield className="h-6 w-6 text-primary group-hover:scale-110 transition-transform" />
             </div>
             <div>
-              <p className="font-semibold text-primary">Produtos Originais</p>
-              <p className="text-sm text-primary">100% Garantido</p>
+              <p className="font-semibold text-primary text-glow">Produtos Originais</p>
+              <p className="text-sm text-muted-foreground">100% Garantido</p>
             </div>
           </div>
           
-          <div className="flex flex-col items-center text-center gap-3">
-            <div className="p-3 rounded-full bg-primary/30 border border-primary/50 backdrop-blur-sm">
-              <Clock className="h-6 w-6 text-primary" />
+          <div className="flex flex-col items-center text-center gap-3 group">
+            <div className="p-3 rounded-full bg-primary/30 border border-primary/50 backdrop-blur-sm icon-bounce group-hover:bg-primary/40 transition-all duration-300">
+              <Clock className="h-6 w-6 text-primary group-hover:scale-110 transition-transform" />
             </div>
             <div>
-              <p className="font-semibold text-primary">Atendimento</p>
-              <p className="text-sm text-primary">Seg à Sex, 9h-18h</p>
+              <p className="font-semibold text-primary text-glow">Atendimento</p>
+              <p className="text-sm text-muted-foreground">Seg à Sex, 9h-18h</p>
             </div>
           </div>
 
-          <div className="flex flex-col items-center text-center gap-3">
-            <div className="p-3 rounded-full bg-primary/30 border border-primary/50 backdrop-blur-sm">
-              <MessageCircle className="h-6 w-6 text-primary" />
+          <div className="flex flex-col items-center text-center gap-3 group">
+            <div className="p-3 rounded-full bg-primary/30 border border-primary/50 backdrop-blur-sm icon-bounce group-hover:bg-primary/40 transition-all duration-300">
+              <MessageCircle className="h-6 w-6 text-primary group-hover:scale-110 transition-transform" />
             </div>
             <div>
-              <p className="font-semibold text-primary">Suporte</p>
-              <p className="text-sm text-primary">WhatsApp 24h</p>
+              <p className="font-semibold text-primary text-glow">Suporte</p>
+              <p className="text-sm text-muted-foreground">WhatsApp 24h</p>
             </div>
           </div>
         </div>
