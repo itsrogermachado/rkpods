@@ -8,7 +8,7 @@ import { AgeVerificationModal } from '@/components/AgeVerificationModal';
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col relative z-10">
       <AgeVerificationModal />
       <Header />
       <main className="flex-1">
