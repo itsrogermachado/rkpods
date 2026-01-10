@@ -44,15 +44,15 @@ export function TrustSection() {
           {stats.map((stat, index) => (
             <div 
               key={index}
-              className="text-center p-6 rounded-2xl bg-card/50 backdrop-blur-sm border border-border/50 hover:border-primary/30 transition-all duration-300 group hover:-translate-y-1"
+              className="text-center p-6 rounded-2xl bg-card/50 backdrop-blur-sm border border-border/50 hover:border-primary/50 transition-all duration-300 group hover:-translate-y-2 border-glow"
             >
-              <div className={`inline-flex p-3 rounded-xl bg-muted/50 ${stat.color} mb-4 group-hover:scale-110 transition-transform`}>
+              <div className={`inline-flex p-3 rounded-xl bg-muted/50 ${stat.color} mb-4 group-hover:scale-110 transition-transform icon-bounce`}>
                 {stat.icon}
               </div>
-              <div className={`text-3xl md:text-4xl font-display font-bold ${stat.color} mb-2`}>
+              <div className={`text-3xl md:text-4xl font-display font-bold mb-2 number-highlight`}>
                 {stat.value}
               </div>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
                 {stat.label}
               </p>
             </div>
@@ -64,10 +64,10 @@ export function TrustSection() {
           {trustBadges.map((badge, index) => (
             <div 
               key={index}
-              className="flex items-center gap-2 px-4 py-2 rounded-full bg-muted/50 border border-border/30 text-muted-foreground hover:text-primary hover:border-primary/30 transition-all"
+              className="flex items-center gap-2 px-4 py-2 rounded-full bg-muted/50 border border-border/30 text-muted-foreground hover:text-primary hover:border-primary/50 hover:bg-primary/10 transition-all duration-300 group cursor-default"
             >
-              {badge.icon}
-              <span className="text-sm font-medium">{badge.label}</span>
+              <span className="icon-glow transition-all duration-300">{badge.icon}</span>
+              <span className="text-sm font-medium link-glow">{badge.label}</span>
             </div>
           ))}
         </div>
