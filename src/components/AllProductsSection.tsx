@@ -109,7 +109,7 @@ export function AllProductsSection() {
       <section id="todos-produtos" className="relative py-16">
         <div className="container">
           <div className="text-center mb-10">
-            <h2 className="text-3xl md:text-4xl font-bold mb-2 text-foreground">
+            <h2 className="text-3xl md:text-4xl font-display font-bold mb-2 text-foreground">
               Nossos <span className="text-primary">Produtos</span>
             </h2>
           </div>
@@ -146,7 +146,7 @@ export function AllProductsSection() {
 
       <div className="container relative z-10">
         <div className="text-center mb-10">
-          <h2 className="text-3xl md:text-4xl font-bold mb-2 text-foreground">
+          <h2 className="text-3xl md:text-4xl font-display font-bold mb-2 text-foreground">
             Nossos <span className="text-primary">Produtos</span>
           </h2>
           <p className="text-muted-foreground">
