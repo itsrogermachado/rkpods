@@ -12,7 +12,7 @@ export function HeroBanner() {
   };
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-secondary via-secondary to-slate-900 py-16 md:py-24">
+    <section className="relative overflow-hidden bg-gradient-to-br from-background via-background to-muted py-16 md:py-24">
       {/* Efeito de Fumaça Animada */}
       <SmokeEffect />
 
@@ -29,12 +29,12 @@ export function HeroBanner() {
               <Sparkles className="h-4 w-4" />
               Novidades toda semana
             </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-white leading-tight">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground leading-tight">
               Os melhores
               <br />
               <span className="text-primary">Pods & Essências</span>
             </h1>
-            <p className="text-lg text-white/70 max-w-md mx-auto md:mx-0">
+            <p className="text-lg text-muted-foreground max-w-md mx-auto md:mx-0">
               Qualidade e variedade que você merece. Entrega rápida para todo o Brasil.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
@@ -46,7 +46,7 @@ export function HeroBanner() {
                 Ver Produtos
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
-              <Button asChild size="lg" className="bg-white text-secondary text-lg px-8">
+              <Button asChild size="lg" variant="outline" className="text-lg px-8">
                 <a href="https://wa.me/5521979265042" target="_blank" rel="noopener noreferrer">
                   Fale Conosco
                 </a>
@@ -64,7 +64,7 @@ export function HeroBanner() {
               <div 
                 className="absolute -top-16 -left-16 w-40 h-40 rounded-full animate-smoke-rise"
                 style={{ 
-                  background: 'radial-gradient(ellipse, hsl(187 85% 48% / 0.25), transparent 70%)',
+                  background: 'radial-gradient(ellipse, hsl(var(--smoke-primary) / 0.35), transparent 70%)',
                   filter: 'blur(30px)',
                   animationDelay: '0s' 
                 }} 
@@ -72,7 +72,7 @@ export function HeroBanner() {
               <div 
                 className="absolute -bottom-10 -right-10 w-48 h-48 rounded-full animate-smoke-drift"
                 style={{ 
-                  background: 'radial-gradient(ellipse, hsl(187 70% 55% / 0.2), transparent 70%)',
+                  background: 'radial-gradient(ellipse, hsl(var(--smoke-secondary) / 0.30), transparent 70%)',
                   filter: 'blur(35px)',
                   animationDelay: '2s' 
                 }} 
@@ -80,7 +80,7 @@ export function HeroBanner() {
               <div 
                 className="absolute top-1/2 -left-20 w-32 h-32 rounded-full animate-vapor-pulse"
                 style={{ 
-                  background: 'radial-gradient(ellipse, hsl(175 80% 45% / 0.2), transparent 70%)',
+                  background: 'radial-gradient(ellipse, hsl(var(--smoke-accent) / 0.30), transparent 70%)',
                   filter: 'blur(25px)',
                   animationDelay: '1s' 
                 }} 
