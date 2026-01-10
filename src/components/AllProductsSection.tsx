@@ -1,41 +1,31 @@
 import { useEffect, useState, useMemo } from 'react';
-import { Search } from 'lucide-react';
+import { Search, MapPin } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
 import { ProductCard } from '@/components/ProductCard';
-import { Product, Category, Zone, ZoneStock } from '@/types';
+import { Product, Category } from '@/types';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { useZone } from '@/contexts/ZoneContext';
 
 export function AllProductsSection() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [zones, setZones] = useState<Zone[]>([]);
-  const [zoneStock, setZoneStock] = useState<ZoneStock[]>([]);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedZoneId, setSelectedZoneId] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const { user } = useAuth();
+  const { selectedZone, selectedZoneId, isProductAvailable, openZoneModal } = useZone();
 
   useEffect(() => {
     fetchProducts();
     fetchCategories();
-    fetchZones();
     if (user) {
       fetchFavorites();
     }
   }, [user]);
-
-  useEffect(() => {
-    if (selectedZoneId) {
-      fetchZoneStock(selectedZoneId);
-    } else {
-      setZoneStock([]);
-    }
-  }, [selectedZoneId]);
 
   const fetchProducts = async () => {
     try {
@@ -73,29 +63,6 @@ export function AllProductsSection() {
     }
   };
 
-  const fetchZones = async () => {
-    const { data } = await supabase
-      .from('zones')
-      .select('*')
-      .eq('active', true)
-      .order('name');
-
-    if (data) {
-      setZones(data as Zone[]);
-    }
-  };
-
-  const fetchZoneStock = async (zoneId: string) => {
-    const { data } = await supabase
-      .from('zone_stock')
-      .select('*')
-      .eq('zone_id', zoneId);
-
-    if (data) {
-      setZoneStock(data as ZoneStock[]);
-    }
-  };
-
   const fetchFavorites = async () => {
     if (!user) return;
     const { data } = await supabase
@@ -106,12 +73,6 @@ export function AllProductsSection() {
     if (data) {
       setFavorites(data.map(f => f.product_id));
     }
-  };
-
-  const getProductZoneStock = (productId: string): number | null => {
-    if (!selectedZoneId) return null;
-    const entry = zoneStock.find(zs => zs.product_id === productId);
-    return entry?.stock ?? 0;
   };
 
   const filteredProducts = useMemo(() => {
@@ -132,17 +93,16 @@ export function AllProductsSection() {
         }
       }
 
-      // Zone stock filter - only show products with stock > 0 in selected zone
+      // Zone stock filter - only show products available in selected zone
       if (selectedZoneId) {
-        const stock = getProductZoneStock(product.id);
-        if (stock === null || stock <= 0) {
+        if (!isProductAvailable(product.id)) {
           return false;
         }
       }
 
       return true;
     });
-  }, [products, selectedCategory, search, selectedZoneId, zoneStock]);
+  }, [products, selectedCategory, search, selectedZoneId, isProductAvailable]);
 
   if (loading) {
     return (
@@ -192,6 +152,20 @@ export function AllProductsSection() {
           <p className="text-muted-foreground">
             Explore nossa variedade completa
           </p>
+          
+          {/* Zone indicator */}
+          {selectedZone && (
+            <div className="mt-4 flex items-center justify-center gap-2">
+              <Badge 
+                variant="secondary" 
+                className="gap-2 py-1.5 px-4 bg-primary/10 text-primary border border-primary/20 cursor-pointer hover:bg-primary/20 transition-colors"
+                onClick={openZoneModal}
+              >
+                <MapPin className="w-3.5 h-3.5" />
+                Mostrando produtos para: {selectedZone.name}
+              </Badge>
+            </div>
+          )}
         </div>
 
         {/* Filters */}
@@ -208,23 +182,15 @@ export function AllProductsSection() {
             />
           </div>
 
-          {/* Zone Filter */}
-          <Select
-            value={selectedZoneId || 'all'}
-            onValueChange={(value) => setSelectedZoneId(value === 'all' ? null : value)}
+          {/* Change Zone Button */}
+          <Button
+            variant="outline"
+            onClick={openZoneModal}
+            className="gap-2 border-primary/30 hover:border-primary/50 hover:bg-primary/5"
           >
-            <SelectTrigger className="w-full md:w-[200px]">
-              <SelectValue placeholder="Todas as zonas" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todas as zonas</SelectItem>
-              {zones.map(zone => (
-                <SelectItem key={zone.id} value={zone.id}>
-                  {zone.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            <MapPin className="w-4 h-4 text-primary" />
+            {selectedZone ? 'Trocar zona' : 'Selecionar zona'}
+          </Button>
         </div>
 
         {/* Category Pills */}
@@ -258,17 +224,27 @@ export function AllProductsSection() {
                 ? 'Nenhum produto disponível nesta zona com os filtros selecionados.'
                 : 'Nenhum produto encontrado com os filtros selecionados.'}
             </p>
-            <Button
-              variant="outline"
-              className="mt-4"
-              onClick={() => {
-                setSelectedCategory(null);
-                setSearch('');
-                setSelectedZoneId(null);
-              }}
-            >
-              Limpar filtros
-            </Button>
+            <div className="flex gap-3 justify-center mt-4">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setSelectedCategory(null);
+                  setSearch('');
+                }}
+              >
+                Limpar filtros
+              </Button>
+              {selectedZoneId && (
+                <Button
+                  variant="default"
+                  onClick={openZoneModal}
+                  className="gap-2"
+                >
+                  <MapPin className="w-4 h-4" />
+                  Trocar zona
+                </Button>
+              )}
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

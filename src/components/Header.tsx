@@ -9,6 +9,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { ZoneIndicator } from '@/components/ZoneIndicator';
 
 export function Header() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -71,8 +72,8 @@ export function Header() {
           </div>
         </form>
 
-        {/* Action Buttons */}
         <div className="flex items-center gap-2">
+          <ZoneIndicator />
           <ThemeToggle />
           
           {isAdmin && (
