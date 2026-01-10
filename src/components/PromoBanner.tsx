@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Truck, Shield, Clock, MessageCircle } from 'lucide-react';
 export function PromoBanner() {
-  return <section className="relative py-12 overflow-hidden bg-gradient-to-br from-background via-background to-muted">
+  return <section className="relative py-6 overflow-hidden bg-gradient-to-br from-background via-background to-muted">
       {/* Camadas de fumaça adaptativas */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {/* Camada 1 - Grande à esquerda */}
