@@ -1,7 +1,7 @@
 export function SmokeEffect() {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {/* Camada 1 - Grande à esquerda */}
+      {/* Camada 1 - Grande à esquerda - Visible on mobile */}
       <div 
         className="absolute -top-10 -left-10 w-96 h-96 rounded-full animate-smoke-drift"
         style={{ 
@@ -11,9 +11,9 @@ export function SmokeEffect() {
         }} 
       />
       
-      {/* Camada 2 - Subindo à direita */}
+      {/* Camada 2 - Subindo à direita - Hidden on mobile */}
       <div 
-        className="absolute top-1/4 -right-10 w-80 h-80 rounded-full animate-smoke-rise"
+        className="absolute top-1/4 -right-10 w-80 h-80 rounded-full animate-smoke-rise hidden md:block"
         style={{ 
           background: 'radial-gradient(ellipse, hsl(var(--smoke-secondary) / 0.40), transparent 55%)',
           filter: 'blur(22px)',
@@ -21,7 +21,7 @@ export function SmokeEffect() {
         }} 
       />
       
-      {/* Camada 3 - Pulsante no centro */}
+      {/* Camada 3 - Pulsante no centro - Visible on mobile */}
       <div 
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[450px] rounded-full animate-vapor-pulse"
         style={{ 
@@ -31,9 +31,9 @@ export function SmokeEffect() {
         }} 
       />
       
-      {/* Camada 4 - Partícula com swirl */}
+      {/* Camada 4 - Partícula com swirl - Hidden on mobile */}
       <div 
-        className="absolute top-1/4 left-1/3 w-44 h-44 rounded-full animate-smoke-swirl"
+        className="absolute top-1/4 left-1/3 w-44 h-44 rounded-full animate-smoke-swirl hidden md:block"
         style={{ 
           background: 'radial-gradient(ellipse, hsl(var(--smoke-primary) / 0.50), transparent 65%)',
           filter: 'blur(15px)',
@@ -41,9 +41,9 @@ export function SmokeEffect() {
         }} 
       />
 
-      {/* Camada 5 - Respiração no canto inferior */}
+      {/* Camada 5 - Respiração no canto inferior - Hidden on mobile */}
       <div 
-        className="absolute bottom-10 left-1/4 w-56 h-56 rounded-full animate-smoke-breathe"
+        className="absolute bottom-10 left-1/4 w-56 h-56 rounded-full animate-smoke-breathe hidden md:block"
         style={{ 
           background: 'radial-gradient(ellipse, hsl(var(--smoke-secondary) / 0.42), transparent 60%)',
           filter: 'blur(18px)',
@@ -51,9 +51,9 @@ export function SmokeEffect() {
         }} 
       />
 
-      {/* Camada 6 - Flutuante no topo */}
+      {/* Camada 6 - Flutuante no topo - Hidden on mobile */}
       <div 
-        className="absolute -top-5 right-1/4 w-52 h-52 rounded-full animate-smoke-float"
+        className="absolute -top-5 right-1/4 w-52 h-52 rounded-full animate-smoke-float hidden md:block"
         style={{ 
           background: 'radial-gradient(ellipse, hsl(var(--smoke-accent) / 0.48), transparent 60%)',
           filter: 'blur(16px)',
@@ -61,9 +61,9 @@ export function SmokeEffect() {
         }} 
       />
 
-      {/* Camada 7 - Partícula de detalhe nítida */}
+      {/* Camada 7 - Partícula de detalhe nítida - Hidden on mobile */}
       <div 
-        className="absolute bottom-1/3 right-1/3 w-36 h-36 rounded-full animate-vapor-pulse"
+        className="absolute bottom-1/3 right-1/3 w-36 h-36 rounded-full animate-vapor-pulse hidden md:block"
         style={{ 
           background: 'radial-gradient(ellipse, hsl(var(--smoke-primary) / 0.55), transparent 65%)',
           filter: 'blur(12px)',
@@ -71,9 +71,9 @@ export function SmokeEffect() {
         }} 
       />
 
-      {/* Camada 8 - Grande atrás */}
+      {/* Camada 8 - Grande atrás - Hidden on mobile */}
       <div 
-        className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[350px] h-[350px] rounded-full animate-smoke-drift"
+        className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[350px] h-[350px] rounded-full animate-smoke-drift hidden md:block"
         style={{ 
           background: 'radial-gradient(ellipse, hsl(var(--smoke-secondary) / 0.30), transparent 55%)',
           filter: 'blur(28px)',
@@ -81,9 +81,9 @@ export function SmokeEffect() {
         }} 
       />
 
-      {/* Camada 9 - Névoa intensa */}
+      {/* Camada 9 - Névoa intensa - Hidden on mobile */}
       <div 
-        className="absolute top-2/3 right-1/4 w-64 h-64 rounded-full animate-smoke-swirl"
+        className="absolute top-2/3 right-1/4 w-64 h-64 rounded-full animate-smoke-swirl hidden md:block"
         style={{ 
           background: 'radial-gradient(ellipse, hsl(var(--smoke-accent) / 0.45), transparent 60%)',
           filter: 'blur(20px)',
@@ -91,9 +91,9 @@ export function SmokeEffect() {
         }} 
       />
 
-      {/* Camada 10 - Partícula concentrada */}
+      {/* Camada 10 - Partícula concentrada - Hidden on mobile */}
       <div 
-        className="absolute top-1/2 left-1/4 w-28 h-28 rounded-full animate-smoke-breathe"
+        className="absolute top-1/2 left-1/4 w-28 h-28 rounded-full animate-smoke-breathe hidden md:block"
         style={{ 
           background: 'radial-gradient(ellipse, hsl(var(--smoke-primary) / 0.60), transparent 70%)',
           filter: 'blur(10px)',

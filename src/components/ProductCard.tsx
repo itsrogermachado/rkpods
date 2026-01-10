@@ -66,9 +66,9 @@ export function ProductCard({ product, isFavorite, onFavoriteToggle }: ProductCa
 
   return (
     <Link to={`/produto/${product.slug}`}>
-      <Card className="group relative overflow-hidden border border-border/50 bg-card/80 backdrop-blur-sm shadow-lg shadow-primary/20 hover:shadow-2xl hover:shadow-primary/40 hover:bg-card transition-all duration-500 hover:-translate-y-2 card-glow border-glow">
-        {/* Smoke effect on hover */}
-        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-20">
+      <Card className="group relative overflow-hidden border border-border/50 bg-card/80 backdrop-blur-sm shadow-lg shadow-primary/10 hover:shadow-xl hover:shadow-primary/20 hover:bg-card transition-all duration-300 hover:-translate-y-1 md:hover:-translate-y-2 card-glow border-glow">
+        {/* Smoke effect on hover - Hidden on mobile for performance */}
+        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-20 hidden md:block">
           <div 
             className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-40 h-40 rounded-full animate-smoke-rise"
             style={{ 
@@ -78,7 +78,7 @@ export function ProductCard({ product, isFavorite, onFavoriteToggle }: ProductCa
           />
         </div>
 
-        <div className="relative aspect-square overflow-hidden bg-muted image-zoom shine-effect">
+        <div className="relative aspect-square overflow-hidden bg-muted image-zoom md:shine-effect">
           <img
             src={imageUrl}
             alt={product.name}
@@ -176,8 +176,8 @@ export function ProductCard({ product, isFavorite, onFavoriteToggle }: ProductCa
           </div>
         </CardContent>
 
-        {/* Shine effect on hover */}
-        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+        {/* Shine effect on hover - Hidden on mobile */}
+        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none hidden md:block">
           <div 
             className="absolute top-0 -left-full w-1/2 h-full bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-12 group-hover:left-full transition-all duration-1000"
           />

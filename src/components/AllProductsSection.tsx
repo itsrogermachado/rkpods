@@ -230,18 +230,13 @@ export function AllProductsSection() {
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {filteredProducts.map((product, index) => (
-              <div
+            {filteredProducts.map((product) => (
+              <ProductCard
                 key={product.id}
-                className="animate-fade-in"
-                style={{ animationDelay: `${index * 50}ms` }}
-              >
-                <ProductCard
-                  product={product}
-                  isFavorite={favorites.includes(product.id)}
-                  onFavoriteToggle={fetchFavorites}
-                />
-              </div>
+                product={product}
+                isFavorite={favorites.includes(product.id)}
+                onFavoriteToggle={fetchFavorites}
+              />
             ))}
           </div>
         )}
