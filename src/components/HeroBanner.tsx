@@ -12,14 +12,9 @@ export function HeroBanner() {
   };
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-background via-background to-muted pt-16 md:pt-24 pb-8">
+    <section className="relative overflow-hidden pt-16 md:pt-24 pb-4">
       {/* Efeito de Fumaça Animada */}
       <SmokeEffect />
-
-      {/* Gradiente de transição no fundo */}
-      <div className="absolute inset-0">
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background/30 to-transparent" />
-      </div>
 
       <div className="container relative z-10">
         <div className="grid md:grid-cols-2 gap-8 items-center">

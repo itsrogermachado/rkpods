@@ -106,7 +106,7 @@ export function AllProductsSection() {
 
   if (loading) {
     return (
-      <section id="todos-produtos" className="relative pt-8 pb-16">
+      <section id="todos-produtos" className="relative pt-4 pb-8">
         <div className="container">
           <div className="text-center mb-10">
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-2 text-foreground">
@@ -124,25 +124,7 @@ export function AllProductsSection() {
   }
 
   return (
-    <section id="todos-produtos" className="relative pt-8 pb-16 overflow-hidden">
-      {/* Fumaça decorativa de fundo */}
-      <div className="absolute inset-0 pointer-events-none opacity-30">
-        <div 
-          className="absolute top-0 left-1/4 w-96 h-96 rounded-full animate-smoke-drift"
-          style={{ 
-            background: 'radial-gradient(ellipse, hsl(187 85% 48% / 0.08), transparent 70%)',
-            filter: 'blur(50px)',
-          }} 
-        />
-        <div 
-          className="absolute bottom-0 right-1/4 w-80 h-80 rounded-full animate-vapor-pulse"
-          style={{ 
-            background: 'radial-gradient(ellipse, hsl(187 70% 55% / 0.06), transparent 70%)',
-            filter: 'blur(40px)',
-            animationDelay: '3s'
-          }} 
-        />
-      </div>
+    <section id="todos-produtos" className="relative pt-4 pb-8 overflow-hidden">
 
       <div className="container relative z-10">
         <div className="text-center mb-10">

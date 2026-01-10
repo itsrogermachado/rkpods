@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Truck, Shield, Clock, MessageCircle } from 'lucide-react';
 export function PromoBanner() {
-  return <section className="relative py-6 overflow-hidden bg-gradient-to-br from-background via-background to-muted">
+  return <section className="relative py-4 overflow-hidden">
       {/* Camadas de fumaça adaptativas */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {/* Camada 1 - Grande à esquerda */}
@@ -101,7 +101,7 @@ export function PromoBanner() {
     </section>;
 }
 export function CTABanner() {
-  return <section className="relative py-16 bg-gradient-to-r from-secondary via-slate-800 to-secondary overflow-hidden">
+  return <section className="relative py-12 overflow-hidden">
       {/* Vapor subindo */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute bottom-0 left-1/4 w-64 h-64 rounded-full animate-smoke-rise" style={{
@@ -122,10 +122,10 @@ export function CTABanner() {
 
       <div className="container relative z-10 text-center">
         <div className="max-w-2xl mx-auto space-y-6">
-          <h2 className="text-3xl md:text-4xl font-bold text-white">
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground">
             Não encontrou o que procura?
           </h2>
-          <p className="text-lg text-white/80">
+          <p className="text-lg text-muted-foreground">
             Fale conosco pelo WhatsApp! Temos muito mais produtos disponíveis e podemos te ajudar a encontrar o pod perfeito.
           </p>
           <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground text-lg px-8 shadow-lg shadow-primary/30">
