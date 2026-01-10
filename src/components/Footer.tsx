@@ -3,33 +3,7 @@ import { Instagram, MessageCircle } from 'lucide-react';
 
 export function Footer() {
   return (
-    <footer className="relative border-t bg-card/80 backdrop-blur-md md:backdrop-blur-xl overflow-hidden">
-      {/* Fumaça decorativa subindo do footer - Hidden on mobile */}
-      <div className="absolute inset-0 pointer-events-none hidden md:block">
-        <div 
-          className="absolute bottom-0 left-1/4 w-64 h-64 rounded-full animate-smoke-rise opacity-20"
-          style={{ 
-            background: 'radial-gradient(ellipse, hsl(187 85% 48% / 0.15), transparent 70%)',
-            filter: 'blur(50px)',
-          }} 
-        />
-        <div 
-          className="absolute bottom-0 right-1/3 w-80 h-80 rounded-full animate-vapor-pulse opacity-15"
-          style={{ 
-            background: 'radial-gradient(ellipse, hsl(175 80% 45% / 0.12), transparent 70%)',
-            filter: 'blur(60px)',
-            animationDelay: '2s'
-          }} 
-        />
-        <div 
-          className="absolute bottom-10 left-1/2 w-48 h-48 rounded-full animate-smoke-drift opacity-15"
-          style={{ 
-            background: 'radial-gradient(ellipse, hsl(187 70% 55% / 0.1), transparent 70%)',
-            filter: 'blur(40px)',
-            animationDelay: '4s'
-          }} 
-        />
-      </div>
+    <footer className="relative border-t bg-card overflow-hidden">
       <div className="container py-12 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
