@@ -30,7 +30,26 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 overflow-hidden">
+      {/* Vapor glow sutil no header */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div 
+          className="absolute -top-10 left-1/4 w-64 h-32 rounded-full animate-smoke-drift opacity-30"
+          style={{ 
+            background: 'radial-gradient(ellipse, hsl(187 85% 48% / 0.15), transparent 70%)',
+            filter: 'blur(25px)',
+          }} 
+        />
+        <div 
+          className="absolute -top-8 right-1/3 w-48 h-24 rounded-full animate-vapor-pulse opacity-25"
+          style={{ 
+            background: 'radial-gradient(ellipse, hsl(175 80% 45% / 0.12), transparent 70%)',
+            filter: 'blur(20px)',
+          }} 
+        />
+      </div>
+      {/* Gradiente de vapor na parte inferior */}
+      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
       <div className="container flex h-16 items-center justify-between gap-4">
         {/* Logo */}
         <Link to="/" className="flex items-center">

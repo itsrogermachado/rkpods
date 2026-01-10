@@ -63,7 +63,34 @@ export function ProductCard({ product, isFavorite, onFavoriteToggle }: ProductCa
 
   return (
     <Link to={`/produto/${product.slug}`}>
-      <Card className="group overflow-hidden border border-border/50 bg-card/80 backdrop-blur-sm shadow-lg shadow-primary/5 hover:shadow-xl hover:shadow-primary/10 hover:bg-card transition-all duration-500 hover:-translate-y-2">
+      <Card className="group relative overflow-hidden border border-border/50 bg-card/80 backdrop-blur-sm shadow-lg shadow-primary/5 hover:shadow-xl hover:shadow-primary/10 hover:bg-card transition-all duration-500 hover:-translate-y-2">
+        {/* Fumaça que aparece no hover do card */}
+        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-20">
+          <div 
+            className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-40 h-40 rounded-full animate-smoke-rise"
+            style={{ 
+              background: 'radial-gradient(ellipse, hsl(187 85% 48% / 0.25), transparent 70%)',
+              filter: 'blur(30px)',
+            }} 
+          />
+          <div 
+            className="absolute bottom-0 left-1/4 w-24 h-24 rounded-full animate-vapor-pulse"
+            style={{ 
+              background: 'radial-gradient(ellipse, hsl(175 80% 45% / 0.2), transparent 70%)',
+              filter: 'blur(20px)',
+              animationDelay: '0.3s'
+            }} 
+          />
+          <div 
+            className="absolute bottom-0 right-1/4 w-28 h-28 rounded-full animate-smoke-drift"
+            style={{ 
+              background: 'radial-gradient(ellipse, hsl(187 70% 55% / 0.18), transparent 70%)',
+              filter: 'blur(25px)',
+              animationDelay: '0.5s'
+            }} 
+          />
+        </div>
+
         <div className="relative aspect-square overflow-hidden bg-muted">
           <img
             src={imageUrl}
@@ -72,7 +99,7 @@ export function ProductCard({ product, isFavorite, onFavoriteToggle }: ProductCa
           />
           
           {/* Badges */}
-          <div className="absolute top-3 left-3 flex flex-col gap-2">
+          <div className="absolute top-3 left-3 flex flex-col gap-2 z-10">
             {discountPercentage > 0 && (
               <Badge className="bg-warning text-warning-foreground border-0">
                 -{discountPercentage}%
@@ -90,7 +117,7 @@ export function ProductCard({ product, isFavorite, onFavoriteToggle }: ProductCa
             variant="secondary"
             size="icon"
             onClick={handleFavoriteClick}
-            className="absolute top-3 right-3 rounded-full opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm bg-secondary/80"
+            className="absolute top-3 right-3 rounded-full opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm bg-secondary/80 z-10"
           >
             <Heart
               className={`h-4 w-4 ${isFavorite ? 'fill-accent text-accent' : ''}`}
@@ -98,7 +125,7 @@ export function ProductCard({ product, isFavorite, onFavoriteToggle }: ProductCa
           </Button>
 
           {/* Quick Add Button */}
-          <div className="absolute bottom-3 left-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="absolute bottom-3 left-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity z-10">
             <Button
               onClick={handleAddToCart}
               className="w-full bg-primary hover:bg-primary/90 text-primary-foreground border-0 backdrop-blur-sm"
@@ -110,7 +137,7 @@ export function ProductCard({ product, isFavorite, onFavoriteToggle }: ProductCa
           </div>
 
           {/* Overlay de vapor sutil no hover */}
-          <div className="absolute inset-0 bg-gradient-to-t from-secondary/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-secondary/30 via-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
         </div>
 
         <CardContent className="p-4">
