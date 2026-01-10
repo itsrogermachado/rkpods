@@ -265,3 +265,22 @@
 .animate-vapor-pulse {
   animation: vapor-pulse 6s ease-in-out infinite;
 }
+
+@keyframes smoke-float {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+    opacity: 0.6;
+  }
+  33% {
+    transform: translateY(-40px) translateX(30px);
+    opacity: 0.4;
+  }
+  66% {
+    transform: translateY(-20px) translateX(-20px);
+    opacity: 0.7;
+  }
+}
+
+.animate-smoke-float {
+  animation: smoke-float 25s ease-in-out infinite;
+}

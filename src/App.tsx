@@ -10,7 +10,7 @@ import { ZoneProvider } from "@/contexts/ZoneContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { AdminRoute } from "@/components/AdminRoute";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { BackgroundSmoke } from "@/components/BackgroundSmoke";
+import { SmokeOverlay } from "@/components/SmokeOverlay";
 import { ZoneSelectionModal } from "@/components/ZoneSelectionModal";
 import { Navigate } from "react-router-dom";
 import Index from "./pages/Index";
@@ -37,7 +37,7 @@ const App = () => (
         <ZoneProvider>
           <CartProvider>
             <TooltipProvider>
-              <BackgroundSmoke />
+              <SmokeOverlay />
               <ZoneSelectionModal />
               <Toaster />
               <Sonner />
