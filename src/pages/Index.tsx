@@ -11,36 +11,7 @@ const Index = () => {
     <div className="min-h-screen flex flex-col relative z-10">
       <AgeVerificationModal />
       <Header />
-      <main className="flex-1 bg-gradient-to-b from-background via-background to-muted relative overflow-hidden">
-        {/* Fumaça global - Reduced layers, hidden extras on mobile */}
-        <div className="absolute inset-0 pointer-events-none">
-          {/* Layer 1 - Always visible */}
-          <div 
-            className="absolute top-[10%] left-0 w-[600px] h-[600px] rounded-full animate-smoke-drift"
-            style={{ 
-              background: 'radial-gradient(ellipse, hsl(var(--smoke-primary) / 0.15), transparent 60%)',
-              filter: 'blur(60px)',
-            }} 
-          />
-          {/* Layer 2 - Hidden on mobile */}
-          <div 
-            className="absolute top-[40%] right-0 w-[500px] h-[500px] rounded-full animate-vapor-pulse hidden md:block"
-            style={{ 
-              background: 'radial-gradient(ellipse, hsl(var(--smoke-secondary) / 0.12), transparent 55%)',
-              filter: 'blur(70px)',
-              animationDelay: '2s'
-            }} 
-          />
-          {/* Layer 3 - Hidden on mobile */}
-          <div 
-            className="absolute top-[70%] left-1/4 w-[700px] h-[700px] rounded-full animate-smoke-breathe hidden md:block"
-            style={{ 
-              background: 'radial-gradient(ellipse, hsl(var(--smoke-accent) / 0.10), transparent 50%)',
-              filter: 'blur(80px)',
-              animationDelay: '4s'
-            }} 
-          />
-        </div>
+      <main className="flex-1 bg-background relative overflow-hidden">
         
         <HeroBanner />
         <PromoBanner />
