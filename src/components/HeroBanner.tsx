@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight, Sparkles, Users } from 'lucide-react';
 import { SmokeEffect } from './SmokeEffect';
 import heroIllustration from '@/assets/hero-illustration.png';
 
@@ -42,8 +42,9 @@ export function HeroBanner() {
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
               <Button asChild size="lg" variant="outline" className="text-lg px-8">
-                <a href="https://wa.me/5521979265042" target="_blank" rel="noopener noreferrer">
-                  Fale Conosco
+                <a href="https://chat.whatsapp.com/GpsU6CI5RWjLUkjmkEk5my" target="_blank" rel="noopener noreferrer">
+                  <Users className="mr-2 h-5 w-5" />
+                  Comunidade VIP
                 </a>
               </Button>
             </div>
