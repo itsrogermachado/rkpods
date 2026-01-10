@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { SmokeEffect } from './SmokeEffect';
+import heroIllustration from '@/assets/hero-illustration.png';
 
 export function HeroBanner() {
   return (
@@ -45,14 +46,44 @@ export function HeroBanner() {
             </div>
           </div>
 
-          {/* Logo/Image com efeito de vidro */}
+          {/* Nova Ilustração com efeito de vapor */}
           <div className="hidden md:flex justify-center animate-scale-in">
             <div className="relative">
-              {/* Glow de vapor atrás */}
-              <div className="absolute inset-0 bg-primary/30 rounded-full blur-3xl scale-110 animate-vapor-pulse" />
-              <div className="relative bg-white/10 backdrop-blur-md rounded-3xl p-12 border border-white/20 shadow-2xl">
-                <img src="/logo.png" alt="RKPODS" className="w-64 h-auto drop-shadow-2xl" />
-              </div>
+              {/* Glow de vapor intenso atrás */}
+              <div className="absolute inset-0 bg-primary/40 rounded-full blur-3xl scale-125 animate-vapor-pulse" />
+              
+              {/* Fumaça adicional envolvendo a imagem */}
+              <div 
+                className="absolute -top-16 -left-16 w-40 h-40 rounded-full animate-smoke-rise"
+                style={{ 
+                  background: 'radial-gradient(ellipse, hsl(187 85% 48% / 0.25), transparent 70%)',
+                  filter: 'blur(30px)',
+                  animationDelay: '0s' 
+                }} 
+              />
+              <div 
+                className="absolute -bottom-10 -right-10 w-48 h-48 rounded-full animate-smoke-drift"
+                style={{ 
+                  background: 'radial-gradient(ellipse, hsl(187 70% 55% / 0.2), transparent 70%)',
+                  filter: 'blur(35px)',
+                  animationDelay: '2s' 
+                }} 
+              />
+              <div 
+                className="absolute top-1/2 -left-20 w-32 h-32 rounded-full animate-vapor-pulse"
+                style={{ 
+                  background: 'radial-gradient(ellipse, hsl(175 80% 45% / 0.2), transparent 70%)',
+                  filter: 'blur(25px)',
+                  animationDelay: '1s' 
+                }} 
+              />
+              
+              {/* Ilustração principal */}
+              <img 
+                src={heroIllustration} 
+                alt="RK PODS" 
+                className="relative w-[420px] h-auto drop-shadow-2xl rounded-2xl"
+              />
             </div>
           </div>
         </div>

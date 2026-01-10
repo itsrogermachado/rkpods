@@ -291,8 +291,34 @@ export default function Products() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-1">
-        <div className="container py-8">
+      <main className="flex-1 relative">
+        {/* Fumaça decorativa na página de produtos */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div 
+            className="absolute top-20 -left-20 w-96 h-96 rounded-full animate-smoke-drift opacity-15"
+            style={{ 
+              background: 'radial-gradient(ellipse, hsl(187 85% 48% / 0.12), transparent 60%)',
+              filter: 'blur(70px)',
+            }} 
+          />
+          <div 
+            className="absolute top-1/3 -right-20 w-80 h-80 rounded-full animate-vapor-pulse opacity-12"
+            style={{ 
+              background: 'radial-gradient(ellipse, hsl(175 80% 45% / 0.1), transparent 65%)',
+              filter: 'blur(60px)',
+              animationDelay: '3s'
+            }} 
+          />
+          <div 
+            className="absolute bottom-40 left-1/3 w-64 h-64 rounded-full animate-smoke-rise opacity-10"
+            style={{ 
+              background: 'radial-gradient(ellipse, hsl(187 70% 55% / 0.1), transparent 70%)',
+              filter: 'blur(50px)',
+              animationDelay: '5s'
+            }} 
+          />
+        </div>
+        <div className="container py-8 relative z-10">
           {/* Header */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
             <div>
