@@ -1,26 +1,18 @@
 import { Button } from '@/components/ui/button';
 import { Truck, Shield, Clock, MessageCircle } from 'lucide-react';
-
 export function PromoBanner() {
-  return (
-    <section className="relative py-12 bg-secondary overflow-hidden">
+  return <section className="relative py-12 overflow-hidden rounded-none shadow-none bg-muted border-muted border-8">
       {/* Fumaça decorativa sutil */}
       <div className="absolute inset-0 pointer-events-none opacity-40">
-        <div 
-          className="absolute top-0 left-1/4 w-64 h-64 rounded-full animate-smoke-drift"
-          style={{ 
-            background: 'radial-gradient(ellipse, hsl(187 85% 48% / 0.1), transparent 70%)',
-            filter: 'blur(30px)',
-          }} 
-        />
-        <div 
-          className="absolute bottom-0 right-1/4 w-48 h-48 rounded-full animate-vapor-pulse"
-          style={{ 
-            background: 'radial-gradient(ellipse, hsl(187 70% 55% / 0.1), transparent 70%)',
-            filter: 'blur(25px)',
-            animationDelay: '2s'
-          }} 
-        />
+        <div className="absolute top-0 left-1/4 w-64 h-64 rounded-full animate-smoke-drift" style={{
+        background: 'radial-gradient(ellipse, hsl(187 85% 48% / 0.1), transparent 70%)',
+        filter: 'blur(30px)'
+      }} />
+        <div className="absolute bottom-0 right-1/4 w-48 h-48 rounded-full animate-vapor-pulse" style={{
+        background: 'radial-gradient(ellipse, hsl(187 70% 55% / 0.1), transparent 70%)',
+        filter: 'blur(25px)',
+        animationDelay: '2s'
+      }} />
       </div>
 
       <div className="container relative z-10">
@@ -30,8 +22,8 @@ export function PromoBanner() {
               <Truck className="h-6 w-6 text-primary" />
             </div>
             <div>
-              <p className="font-semibold">Entrega Rápida</p>
-              <p className="text-sm text-white/70">Rio de Janeiro</p>
+              <p className="font-semibold text-primary">Entrega Rápida</p>
+              <p className="text-sm text-primary">Rio de Janeiro</p>
             </div>
           </div>
           
@@ -40,8 +32,8 @@ export function PromoBanner() {
               <Shield className="h-6 w-6 text-primary" />
             </div>
             <div>
-              <p className="font-semibold">Produtos Originais</p>
-              <p className="text-sm text-white/70">100% Garantido</p>
+              <p className="font-semibold text-primary">Produtos Originais</p>
+              <p className="text-sm text-primary">100% Garantido</p>
             </div>
           </div>
           
@@ -50,8 +42,8 @@ export function PromoBanner() {
               <Clock className="h-6 w-6 text-primary" />
             </div>
             <div>
-              <p className="font-semibold">Atendimento</p>
-              <p className="text-sm text-white/70">Seg à Sex, 9h-18h</p>
+              <p className="font-semibold text-primary">Atendimento</p>
+              <p className="text-sm text-primary">Seg à Sex, 9h-18h</p>
             </div>
           </div>
 
@@ -60,44 +52,32 @@ export function PromoBanner() {
               <MessageCircle className="h-6 w-6 text-primary" />
             </div>
             <div>
-              <p className="font-semibold">Suporte</p>
-              <p className="text-sm text-white/70">WhatsApp 24h</p>
+              <p className="font-semibold text-primary">Suporte</p>
+              <p className="text-sm text-primary">WhatsApp 24h</p>
             </div>
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 }
-
 export function CTABanner() {
-  return (
-    <section className="relative py-16 bg-gradient-to-r from-secondary via-slate-800 to-secondary overflow-hidden">
+  return <section className="relative py-16 bg-gradient-to-r from-secondary via-slate-800 to-secondary overflow-hidden">
       {/* Vapor subindo */}
       <div className="absolute inset-0 pointer-events-none">
-        <div 
-          className="absolute bottom-0 left-1/4 w-64 h-64 rounded-full animate-smoke-rise"
-          style={{ 
-            background: 'radial-gradient(ellipse, hsl(187 85% 48% / 0.15), transparent 70%)',
-            filter: 'blur(40px)',
-          }} 
-        />
-        <div 
-          className="absolute bottom-0 right-1/3 w-48 h-48 rounded-full animate-smoke-rise"
-          style={{ 
-            background: 'radial-gradient(ellipse, hsl(175 80% 45% / 0.12), transparent 70%)',
-            filter: 'blur(35px)',
-            animationDelay: '3s' 
-          }} 
-        />
-        <div 
-          className="absolute bottom-0 left-1/2 w-72 h-72 rounded-full animate-vapor-pulse"
-          style={{ 
-            background: 'radial-gradient(ellipse, hsl(187 70% 50% / 0.1), transparent 70%)',
-            filter: 'blur(50px)',
-            animationDelay: '1.5s' 
-          }} 
-        />
+        <div className="absolute bottom-0 left-1/4 w-64 h-64 rounded-full animate-smoke-rise" style={{
+        background: 'radial-gradient(ellipse, hsl(187 85% 48% / 0.15), transparent 70%)',
+        filter: 'blur(40px)'
+      }} />
+        <div className="absolute bottom-0 right-1/3 w-48 h-48 rounded-full animate-smoke-rise" style={{
+        background: 'radial-gradient(ellipse, hsl(175 80% 45% / 0.12), transparent 70%)',
+        filter: 'blur(35px)',
+        animationDelay: '3s'
+      }} />
+        <div className="absolute bottom-0 left-1/2 w-72 h-72 rounded-full animate-vapor-pulse" style={{
+        background: 'radial-gradient(ellipse, hsl(187 70% 50% / 0.1), transparent 70%)',
+        filter: 'blur(50px)',
+        animationDelay: '1.5s'
+      }} />
       </div>
 
       <div className="container relative z-10 text-center">
@@ -116,6 +96,5 @@ export function CTABanner() {
           </Button>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 }
