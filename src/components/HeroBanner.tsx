@@ -1,10 +1,16 @@
-import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { SmokeEffect } from './SmokeEffect';
 import heroIllustration from '@/assets/hero-illustration.png';
 
 export function HeroBanner() {
+  const scrollToProducts = () => {
+    const productsSection = document.getElementById('todos-produtos');
+    if (productsSection) {
+      productsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-secondary via-secondary to-slate-900 py-16 md:py-24">
       {/* Efeito de Fumaça Animada */}
@@ -32,11 +38,13 @@ export function HeroBanner() {
               Qualidade e variedade que você merece. Entrega rápida para todo o Brasil.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-              <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground text-lg px-8 shadow-lg shadow-primary/30">
-                <Link to="/produtos">
-                  Ver Produtos
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
+              <Button 
+                size="lg" 
+                onClick={scrollToProducts}
+                className="bg-primary hover:bg-primary/90 text-primary-foreground text-lg px-8 shadow-lg shadow-primary/30"
+              >
+                Ver Produtos
+                <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
               <Button asChild size="lg" className="bg-white text-secondary text-lg px-8">
                 <a href="https://wa.me/5521979265042" target="_blank" rel="noopener noreferrer">
