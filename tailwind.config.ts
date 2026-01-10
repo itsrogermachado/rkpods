@@ -114,6 +114,11 @@ export default {
           "0%, 100%": { opacity: "0.3", transform: "scale(1)" },
           "50%": { opacity: "0.6", transform: "scale(1.1)" },
         },
+        "smoke-float": {
+          "0%, 100%": { transform: "translateY(0) translateX(0)", opacity: "0.6" },
+          "33%": { transform: "translateY(-40px) translateX(30px)", opacity: "0.4" },
+          "66%": { transform: "translateY(-20px) translateX(-20px)", opacity: "0.7" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -125,6 +130,7 @@ export default {
         "smoke-rise": "smoke-rise 10s ease-in-out infinite",
         "smoke-drift": "smoke-drift 15s ease-in-out infinite",
         "vapor-pulse": "vapor-pulse 6s ease-in-out infinite",
+        "smoke-float": "smoke-float 25s ease-in-out infinite",
       },
       fontFamily: {
         sans: ["Inter", "system-ui", "sans-serif"],
