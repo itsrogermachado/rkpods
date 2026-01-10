@@ -218,6 +218,79 @@
   }
 }
 
+/* ===== Mobile Performance Optimizations ===== */
+@media (max-width: 768px) {
+  /* Disable heavy smoke animations on mobile */
+  [class*="animate-smoke"],
+  [class*="animate-vapor"] {
+    animation: none !important;
+  }
+
+  /* Reduce blur intensity on mobile */
+  .smoke-layer,
+  .smoke-layer-dark {
+    filter: blur(20px) !important;
+    opacity: 0.2 !important;
+  }
+
+  /* Simplify backdrop-blur */
+  .backdrop-blur-xl {
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+  }
+
+  /* Disable shine effect */
+  .shine-effect::after {
+    display: none !important;
+  }
+
+  /* Disable border-glow pseudo */
+  .border-glow::before {
+    display: none !important;
+  }
+
+  /* Simplify text-glow */
+  .text-glow {
+    text-shadow: none !important;
+  }
+
+  /* Disable glow-pulse animation */
+  .animate-glow-pulse {
+    animation: none !important;
+    box-shadow: 0 0 5px hsl(var(--primary) / 0.3) !important;
+  }
+
+  /* Disable card-glow pseudo */
+  .card-glow::after {
+    display: none !important;
+  }
+
+  /* Reduce glass blur */
+  .glass,
+  .glass-smoke,
+  .glass-premium {
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+  }
+
+  /* Disable link-glow animation */
+  .link-glow::after {
+    display: none !important;
+  }
+
+  /* Disable number-highlight filter */
+  .number-highlight {
+    filter: none !important;
+  }
+}
+
+/* GPU optimization for animated elements */
+[class*="animate-smoke"],
+[class*="animate-vapor"] {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+}
+
 /* Animações de fumaça */
 @keyframes smoke-rise {
   0% {

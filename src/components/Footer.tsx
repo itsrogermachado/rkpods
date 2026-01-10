@@ -3,9 +3,9 @@ import { Instagram, MessageCircle } from 'lucide-react';
 
 export function Footer() {
   return (
-    <footer className="relative border-t bg-card/80 backdrop-blur-xl overflow-hidden">
-      {/* Fumaça decorativa subindo do footer */}
-      <div className="absolute inset-0 pointer-events-none">
+    <footer className="relative border-t bg-card/80 backdrop-blur-md md:backdrop-blur-xl overflow-hidden">
+      {/* Fumaça decorativa subindo do footer - Hidden on mobile */}
+      <div className="absolute inset-0 pointer-events-none hidden md:block">
         <div 
           className="absolute bottom-0 left-1/4 w-64 h-64 rounded-full animate-smoke-rise opacity-20"
           style={{ 

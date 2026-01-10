@@ -31,9 +31,9 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/90 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 overflow-hidden">
-      {/* Vapor glow sutil no header */}
-      <div className="absolute inset-0 pointer-events-none">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/90 backdrop-blur-md md:backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 overflow-hidden">
+      {/* Vapor glow sutil no header - Hidden on mobile */}
+      <div className="absolute inset-0 pointer-events-none hidden md:block">
         <div 
           className="absolute -top-10 left-1/4 w-64 h-32 rounded-full animate-smoke-drift opacity-30"
           style={{ 
