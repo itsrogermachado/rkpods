@@ -1,20 +1,24 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Sparkles } from 'lucide-react';
+import { SmokeEffect } from './SmokeEffect';
+
 export function HeroBanner() {
-  return <section className="relative overflow-hidden bg-gradient-to-br from-secondary via-secondary to-slate-800 py-16 md:py-24">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-10 left-10 w-72 h-72 bg-primary rounded-full blur-3xl" />
-        <div className="absolute bottom-10 right-10 w-96 h-96 bg-primary/50 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-cyan-400 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+  return (
+    <section className="relative overflow-hidden bg-gradient-to-br from-secondary via-secondary to-slate-900 py-16 md:py-24">
+      {/* Efeito de Fumaça Animada */}
+      <SmokeEffect />
+
+      {/* Gradiente de transição no fundo */}
+      <div className="absolute inset-0">
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background/30 to-transparent" />
       </div>
 
-      <div className="container relative">
+      <div className="container relative z-10">
         <div className="grid md:grid-cols-2 gap-8 items-center">
           {/* Content */}
           <div className="text-center md:text-left space-y-6 animate-fade-in">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/20 text-primary text-sm font-medium border border-primary/30">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/20 text-primary text-sm font-medium border border-primary/30 backdrop-blur-sm">
               <Sparkles className="h-4 w-4" />
               Novidades toda semana
             </div>
@@ -41,16 +45,18 @@ export function HeroBanner() {
             </div>
           </div>
 
-          {/* Logo/Image */}
+          {/* Logo/Image com efeito de vidro */}
           <div className="hidden md:flex justify-center animate-scale-in">
             <div className="relative">
-              <div className="absolute inset-0 bg-primary/30 rounded-full blur-3xl scale-110" />
-              <div className="relative bg-white/10 backdrop-blur-sm rounded-3xl p-12 border border-white/20">
+              {/* Glow de vapor atrás */}
+              <div className="absolute inset-0 bg-primary/30 rounded-full blur-3xl scale-110 animate-vapor-pulse" />
+              <div className="relative bg-white/10 backdrop-blur-md rounded-3xl p-12 border border-white/20 shadow-2xl">
                 <img src="/logo.png" alt="RKPODS" className="w-64 h-auto drop-shadow-2xl" />
               </div>
             </div>
           </div>
         </div>
       </div>
-    </section>;
+    </section>
+  );
 }

@@ -54,6 +54,21 @@
     --gradient-vapor: linear-gradient(135deg, hsl(187 85% 55%), hsl(175 80% 45%));
     --gradient-dark: linear-gradient(135deg, hsl(215 25% 22%), hsl(215 30% 15%));
 
+    /* Cores de vapor/fumaça */
+    --vapor-light: 187 85% 60%;
+    --vapor-medium: 187 70% 45%;
+    --vapor-dark: 215 30% 20%;
+
+    /* Gradientes de fumaça */
+    --gradient-smoke: radial-gradient(ellipse at center, 
+      hsl(187 85% 48% / 0.2), 
+      hsl(215 30% 15% / 0.1), 
+      transparent);
+    --gradient-mist: linear-gradient(180deg, 
+      transparent, 
+      hsl(187 85% 48% / 0.1), 
+      transparent);
+
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 215 25% 20%;
     --sidebar-primary: 187 85% 48%;
@@ -99,6 +114,11 @@
     --input: 215 25% 20%;
     --ring: 187 85% 52%;
 
+    /* Cores de vapor/fumaça para dark mode */
+    --vapor-light: 187 85% 55%;
+    --vapor-medium: 187 70% 40%;
+    --vapor-dark: 215 30% 15%;
+
     --sidebar-background: 215 28% 10%;
     --sidebar-foreground: 0 0% 98%;
     --sidebar-primary: 187 85% 52%;
@@ -138,6 +158,14 @@
     background: var(--gradient-dark);
   }
 
+  .gradient-smoke {
+    background: var(--gradient-smoke);
+  }
+
+  .gradient-mist {
+    background: var(--gradient-mist);
+  }
+
   .text-gradient {
     background: var(--gradient-primary);
     -webkit-background-clip: text;
@@ -158,7 +186,82 @@
     -webkit-backdrop-filter: blur(12px);
   }
 
+  .glass-smoke {
+    background: hsl(var(--secondary) / 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
   .card-hover {
     @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
   }
+
+  /* Camada de fumaça base */
+  .smoke-layer {
+    background: radial-gradient(ellipse, hsl(var(--vapor-light) / 0.15), transparent 70%);
+    filter: blur(40px);
+  }
+
+  .smoke-layer-dark {
+    background: radial-gradient(ellipse, hsl(var(--vapor-dark) / 0.2), transparent 70%);
+    filter: blur(50px);
+  }
+}
+
+/* Animações de fumaça */
+@keyframes smoke-rise {
+  0% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateY(-30px) translateX(10px) scale(1.1);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(-60px) translateX(-5px) scale(1);
+    opacity: 0.2;
+  }
+}
+
+@keyframes smoke-drift {
+  0%, 100% {
+    transform: translateX(0) rotate(0deg);
+    opacity: 0.4;
+  }
+  25% {
+    transform: translateX(20px) rotate(2deg);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateX(30px) rotate(0deg);
+    opacity: 0.3;
+  }
+  75% {
+    transform: translateX(-20px) rotate(-2deg);
+    opacity: 0.5;
+  }
+}
+
+@keyframes vapor-pulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.1);
+  }
+}
+
+.animate-smoke-rise {
+  animation: smoke-rise 10s ease-in-out infinite;
+}
+
+.animate-smoke-drift {
+  animation: smoke-drift 15s ease-in-out infinite;
+}
+
+.animate-vapor-pulse {
+  animation: vapor-pulse 6s ease-in-out infinite;
 }
