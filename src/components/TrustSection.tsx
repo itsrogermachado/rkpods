@@ -36,17 +36,7 @@ const trustBadges = [
 
 export function TrustSection() {
   return (
-    <section className="py-16 px-4 relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div 
-          className="absolute bottom-0 right-1/4 w-[500px] h-[500px] rounded-full animate-smoke-drift"
-          style={{
-            background: 'radial-gradient(ellipse, hsl(var(--primary) / 0.06), transparent 60%)',
-            filter: 'blur(80px)',
-          }}
-        />
-      </div>
+    <section className="py-8 px-4 relative overflow-hidden">
 
       <div className="container max-w-6xl mx-auto relative">
         {/* Stats Grid */}
