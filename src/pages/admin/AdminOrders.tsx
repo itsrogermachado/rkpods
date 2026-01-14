@@ -111,8 +111,8 @@ Total: R$ ${order.total.toFixed(2).replace('.', ',')}
 
 Endereço de entrega:
 ${address.street}, ${address.number}
-${address.neighborhood}, ${address.city} - ${address.state}
-CEP: ${address.cep}`;
+${address.neighborhood}, ${address.city}
+${address.cep ? `CEP: ${address.cep}` : ''}`;
 
     window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
   };
@@ -299,7 +299,7 @@ CEP: ${address.cep}`;
                   {selectedOrder.address.complement && ` - ${selectedOrder.address.complement}`}
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  {selectedOrder.address.neighborhood}, {selectedOrder.address.city} - {selectedOrder.address.state}
+                  {selectedOrder.address.neighborhood}, {selectedOrder.address.city}
                 </p>
                 <p className="text-sm text-muted-foreground">
                   CEP: {selectedOrder.address.cep}

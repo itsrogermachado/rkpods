@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Eye, EyeOff, Package } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { Plus, Edit2, Trash2, Eye, EyeOff, Package, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -40,6 +40,9 @@ export default function AdminProducts() {
     active: true,
   });
   const [zoneStockData, setZoneStockData] = useState<Record<string, string>>({});
+  const [filterZone, setFilterZone] = useState<string>('all');
+  const [filterCategory, setFilterCategory] = useState<string>('all');
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     fetchData();
