@@ -310,46 +310,7 @@ export default function AdminProducts() {
                     onChange={e => handleNameChange(e.target.value)}
                     required
                   />
-      </div>
-
-      {/* Filtros */}
-      <div className="flex flex-wrap gap-4 mb-6">
-        <div className="flex-1 min-w-[200px]">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Buscar produto..."
-              value={searchTerm}
-              onChange={e => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-        </div>
-        
-        <Select value={filterZone} onValueChange={setFilterZone}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Todas as zonas" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Todas as zonas</SelectItem>
-            {zones.map(zone => (
-              <SelectItem key={zone.id} value={zone.id}>{zone.name}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        
-        <Select value={filterCategory} onValueChange={setFilterCategory}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Todas categorias" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Todas categorias</SelectItem>
-            {categories.map(cat => (
-              <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+                </div>
                 <div className="space-y-2">
                   <Label htmlFor="slug">Slug *</Label>
                   <Input
@@ -498,6 +459,45 @@ export default function AdminProducts() {
             </form>
           </DialogContent>
         </Dialog>
+      </div>
+
+      {/* Filtros */}
+      <div className="flex flex-wrap gap-4 mb-6">
+        <div className="flex-1 min-w-[200px]">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Buscar produto..."
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+        </div>
+        
+        <Select value={filterZone} onValueChange={setFilterZone}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Todas as zonas" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todas as zonas</SelectItem>
+            {zones.map(zone => (
+              <SelectItem key={zone.id} value={zone.id}>{zone.name}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        
+        <Select value={filterCategory} onValueChange={setFilterCategory}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Todas categorias" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todas categorias</SelectItem>
+            {categories.map(cat => (
+              <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {loading ? (
