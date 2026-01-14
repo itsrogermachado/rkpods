@@ -9,8 +9,8 @@ export function generateWhatsAppMessage(items: CartItem[], address: Address, tot
     `${address.street}, ${address.number}`,
     address.complement ? ` - ${address.complement}` : '',
     `\n${address.neighborhood}`,
-    `\n${address.city} - ${address.state}`,
-    `\nCEP: ${address.cep}`,
+    `\n${address.city}`,
+    address.cep ? `\nCEP: ${address.cep}` : '',
     address.reference ? `\nRef: ${address.reference}` : ''
   ].join('');
 

@@ -42,7 +42,6 @@ export interface Address {
   complement: string;
   neighborhood: string;
   city: string;
-  state: string;
   reference: string;
   is_default?: boolean;
 }

@@ -21,13 +21,12 @@ import { toast } from 'sonner';
 
 const addressSchema = z.object({
   label: z.string().min(1, 'Apelido é obrigatório'),
-  cep: z.string().regex(/^\d{5}-?\d{3}$/, 'CEP inválido'),
+  cep: z.string().optional(),
   street: z.string().min(1, 'Rua é obrigatória'),
   number: z.string().min(1, 'Número é obrigatório'),
   complement: z.string().optional(),
   neighborhood: z.string().min(1, 'Bairro é obrigatório'),
   city: z.string().min(1, 'Cidade é obrigatória'),
-  state: z.string().length(2, 'Estado deve ter 2 letras'),
   reference: z.string().optional(),
 });
 
@@ -176,7 +175,6 @@ export default function Checkout() {
         form.setValue('street', data.logradouro || '');
         form.setValue('neighborhood', data.bairro || '');
         form.setValue('city', data.localidade || '');
-        form.setValue('state', data.uf || '');
       }
     } catch {
       // ViaCEP error - user will fill manually
@@ -206,13 +204,12 @@ export default function Checkout() {
       if (selectedAddressId === 'new') {
         address = {
           label: formData.label,
-          cep: formData.cep,
+          cep: formData.cep || '',
           street: formData.street,
           number: formData.number,
           complement: formData.complement || '',
           neighborhood: formData.neighborhood,
           city: formData.city,
-          state: formData.state,
           reference: formData.reference || '',
         };
 
@@ -454,7 +451,7 @@ export default function Checkout() {
                                 {addr.complement && ` - ${addr.complement}`}
                               </p>
                               <p className="text-sm text-muted-foreground">
-                                {addr.neighborhood}, {addr.city} - {addr.state}
+                                {addr.neighborhood}, {addr.city}
                               </p>
                             </div>
                           </div>
@@ -492,7 +489,7 @@ export default function Checkout() {
                           )}
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="cep">CEP</Label>
+                          <Label htmlFor="cep">CEP (opcional)</Label>
                           <Input
                             id="cep"
                             placeholder="00000-000"
@@ -501,11 +498,6 @@ export default function Checkout() {
                           />
                           {cepLoading && (
                             <p className="text-sm text-muted-foreground">Buscando CEP...</p>
-                          )}
-                          {form.formState.errors.cep && (
-                            <p className="text-sm text-destructive">
-                              {form.formState.errors.cep.message}
-                            </p>
                           )}
                         </div>
                       </div>
@@ -540,7 +532,7 @@ export default function Checkout() {
                         />
                       </div>
 
-                      <div className="grid grid-cols-3 gap-4">
+                      <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="neighborhood">Bairro</Label>
                           <Input id="neighborhood" {...form.register('neighborhood')} />
@@ -556,20 +548,6 @@ export default function Checkout() {
                           {form.formState.errors.city && (
                             <p className="text-sm text-destructive">
                               {form.formState.errors.city.message}
-                            </p>
-                          )}
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="state">Estado</Label>
-                          <Input
-                            id="state"
-                            placeholder="UF"
-                            maxLength={2}
-                            {...form.register('state')}
-                          />
-                          {form.formState.errors.state && (
-                            <p className="text-sm text-destructive">
-                              {form.formState.errors.state.message}
                             </p>
                           )}
                         </div>

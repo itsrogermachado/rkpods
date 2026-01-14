@@ -25,13 +25,12 @@ const profileSchema = z.object({
 
 const addressSchema = z.object({
   label: z.string().min(1, 'Apelido é obrigatório'),
-  cep: z.string().regex(/^\d{5}-?\d{3}$/, 'CEP inválido'),
+  cep: z.string().optional(),
   street: z.string().min(1, 'Rua é obrigatória'),
   number: z.string().min(1, 'Número é obrigatório'),
   complement: z.string().optional(),
   neighborhood: z.string().min(1, 'Bairro é obrigatório'),
   city: z.string().min(1, 'Cidade é obrigatória'),
-  state: z.string().length(2, 'Estado deve ter 2 letras'),
   reference: z.string().optional(),
 });
 
@@ -146,13 +145,12 @@ export default function MyAccount() {
         .from('addresses')
         .update({
           label: data.label,
-          cep: data.cep,
+          cep: data.cep || null,
           street: data.street,
           number: data.number,
           complement: data.complement || null,
           neighborhood: data.neighborhood,
           city: data.city,
-          state: data.state,
           reference: data.reference || null,
         })
         .eq('id', editingAddress.id);
@@ -167,13 +165,12 @@ export default function MyAccount() {
       const { error } = await supabase.from('addresses').insert({
         user_id: user.id,
         label: data.label,
-        cep: data.cep,
+        cep: data.cep || '',
         street: data.street,
         number: data.number,
         complement: data.complement || null,
         neighborhood: data.neighborhood,
         city: data.city,
-        state: data.state,
         reference: data.reference || null,
         is_default: addresses.length === 0,
       });
@@ -236,7 +233,6 @@ export default function MyAccount() {
       complement: address.complement || '',
       neighborhood: address.neighborhood,
       city: address.city,
-      state: address.state,
       reference: address.reference || '',
     });
     setAddressDialogOpen(true);
@@ -394,10 +390,6 @@ export default function MyAccount() {
                             <Label htmlFor="city">Cidade</Label>
                             <Input id="city" {...addressForm.register('city')} />
                           </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="state">UF</Label>
-                            <Input id="state" maxLength={2} {...addressForm.register('state')} />
-                          </div>
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor="reference">Referência</Label>
@@ -454,7 +446,7 @@ export default function MyAccount() {
                               {addr.complement && ` - ${addr.complement}`}
                             </p>
                             <p className="text-sm text-muted-foreground">
-                              {addr.neighborhood}, {addr.city} - {addr.state}
+                              {addr.neighborhood}, {addr.city}
                             </p>
                             <p className="text-sm text-muted-foreground">CEP: {addr.cep}</p>
                             {addr.reference && (
