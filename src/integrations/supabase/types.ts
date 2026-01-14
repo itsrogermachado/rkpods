@@ -26,7 +26,7 @@ export type Database = {
           neighborhood: string
           number: string
           reference: string | null
-          state: string
+          state: string | null
           street: string
           user_id: string
         }
@@ -41,7 +41,7 @@ export type Database = {
           neighborhood: string
           number: string
           reference?: string | null
-          state: string
+          state?: string | null
           street: string
           user_id: string
         }
@@ -56,7 +56,7 @@ export type Database = {
           neighborhood?: string
           number?: string
           reference?: string | null
-          state?: string
+          state?: string | null
           street?: string
           user_id?: string
         }

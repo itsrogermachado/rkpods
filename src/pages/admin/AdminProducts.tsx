@@ -259,6 +259,30 @@ export default function AdminProducts() {
     return product.zoneStocks.reduce((sum, s) => sum + s.stock, 0);
   };
 
+  const filteredProducts = useMemo(() => {
+    return products.filter(product => {
+      // Filtro por zona
+      if (filterZone !== 'all') {
+        const hasStockInZone = product.zoneStocks.some(
+          s => s.zone_id === filterZone && s.stock > 0
+        );
+        if (!hasStockInZone) return false;
+      }
+      
+      // Filtro por categoria
+      if (filterCategory !== 'all' && product.category_id !== filterCategory) {
+        return false;
+      }
+      
+      // Filtro por nome
+      if (searchTerm && !product.name.toLowerCase().includes(searchTerm.toLowerCase())) {
+        return false;
+      }
+      
+      return true;
+    });
+  }, [products, filterZone, filterCategory, searchTerm]);
+
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
@@ -286,7 +310,46 @@ export default function AdminProducts() {
                     onChange={e => handleNameChange(e.target.value)}
                     required
                   />
-                </div>
+      </div>
+
+      {/* Filtros */}
+      <div className="flex flex-wrap gap-4 mb-6">
+        <div className="flex-1 min-w-[200px]">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Buscar produto..."
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+        </div>
+        
+        <Select value={filterZone} onValueChange={setFilterZone}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Todas as zonas" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todas as zonas</SelectItem>
+            {zones.map(zone => (
+              <SelectItem key={zone.id} value={zone.id}>{zone.name}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        
+        <Select value={filterCategory} onValueChange={setFilterCategory}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Todas categorias" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todas categorias</SelectItem>
+            {categories.map(cat => (
+              <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
                 <div className="space-y-2">
                   <Label htmlFor="slug">Slug *</Label>
                   <Input
@@ -443,13 +506,13 @@ export default function AdminProducts() {
             <Skeleton key={i} className="h-20 w-full" />
           ))}
         </div>
-      ) : products.length === 0 ? (
+      ) : filteredProducts.length === 0 ? (
         <p className="text-center text-muted-foreground py-12">
-          Nenhum produto cadastrado.
+          {products.length === 0 ? 'Nenhum produto cadastrado.' : 'Nenhum produto encontrado com os filtros aplicados.'}
         </p>
       ) : (
         <div className="space-y-4">
-          {products.map(product => (
+          {filteredProducts.map(product => (
             <Card key={product.id}>
               <CardContent className="flex items-center gap-4 py-4">
                 <img
