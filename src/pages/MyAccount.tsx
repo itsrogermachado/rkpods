@@ -171,6 +171,7 @@ export default function MyAccount() {
         complement: data.complement || null,
         neighborhood: data.neighborhood,
         city: data.city,
+        state: '',
         reference: data.reference || null,
         is_default: addresses.length === 0,
       });

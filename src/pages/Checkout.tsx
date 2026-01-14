@@ -217,7 +217,15 @@ export default function Checkout() {
         if (user) {
           await supabase.from('addresses').insert({
             user_id: user.id,
-            ...address,
+            label: address.label,
+            cep: address.cep,
+            street: address.street,
+            number: address.number,
+            complement: address.complement || null,
+            neighborhood: address.neighborhood,
+            city: address.city,
+            state: '',
+            reference: address.reference || null,
           });
         }
       } else {
