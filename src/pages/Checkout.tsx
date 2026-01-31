@@ -49,7 +49,7 @@ export default function Checkout() {
   const [cepLoading, setCepLoading] = useState(false);
   const [zoneStock, setZoneStock] = useState<ZoneStock[]>([]);
   const [stockLoading, setStockLoading] = useState(false);
-  const { items, totalPrice, clearCart } = useCart();
+  const { items, totalPrice, clearCart, appliedCoupon, couponDiscount, finalPrice } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -244,14 +244,30 @@ export default function Checkout() {
           quantity: item.quantity,
         })) as any,
         address: address as any,
-        total: totalPrice,
+        total: finalPrice,
         status: 'pending',
         zone_id: selectedZoneId,
         zone_name: selectedZone?.name || null,
       });
 
+      // Increment coupon uses_count if a coupon was applied
+      if (appliedCoupon) {
+        await supabase
+          .from('coupons')
+          .update({ uses_count: appliedCoupon.uses_count + 1 })
+          .eq('id', appliedCoupon.id);
+      }
+
       // Generate WhatsApp message and redirect to zone's vendor
-      const message = generateWhatsAppMessage(items, address, totalPrice, selectedZone?.name);
+      const message = generateWhatsAppMessage({
+        items,
+        address,
+        subtotal: totalPrice,
+        coupon: appliedCoupon,
+        couponDiscount,
+        finalTotal: finalPrice,
+        zoneName: selectedZone?.name,
+      });
       const whatsappLink = getWhatsAppLink(message, selectedZone!.whatsapp_number);
 
       clearCart();
@@ -668,10 +684,23 @@ export default function Checkout() {
                     </div>
                   )}
 
+                  {appliedCoupon && couponDiscount > 0 && (
+                    <>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Subtotal</span>
+                        <span>R$ {totalPrice.toFixed(2).replace('.', ',')}</span>
+                      </div>
+                      <div className="flex justify-between text-sm text-green-600">
+                        <span>Cupom ({appliedCoupon.code})</span>
+                        <span>-R$ {couponDiscount.toFixed(2).replace('.', ',')}</span>
+                      </div>
+                    </>
+                  )}
+
                   <div className="flex justify-between text-lg font-bold">
                     <span>Total</span>
                     <span className="text-primary">
-                      R$ {totalPrice.toFixed(2).replace('.', ',')}
+                      R$ {finalPrice.toFixed(2).replace('.', ',')}
                     </span>
                   </div>
 
