@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { CartItem, Product } from '@/types';
+import { CartItem, Product, Coupon } from '@/types';
+import { supabase } from '@/integrations/supabase/client';
 
 interface CartContextType {
   items: CartItem[];
@@ -9,11 +10,17 @@ interface CartContextType {
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
+  appliedCoupon: Coupon | null;
+  couponDiscount: number;
+  finalPrice: number;
+  applyCoupon: (code: string) => Promise<{ success: boolean; message: string }>;
+  removeCoupon: () => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 const CART_STORAGE_KEY = 'rkpods_cart';
+const COUPON_STORAGE_KEY = 'rkpods_coupon';
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>(() => {
@@ -24,9 +31,25 @@ export function CartProvider({ children }: { children: ReactNode }) {
     return [];
   });
 
+  const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem(COUPON_STORAGE_KEY);
+      return saved ? JSON.parse(saved) : null;
+    }
+    return null;
+  });
+
   useEffect(() => {
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
   }, [items]);
+
+  useEffect(() => {
+    if (appliedCoupon) {
+      localStorage.setItem(COUPON_STORAGE_KEY, JSON.stringify(appliedCoupon));
+    } else {
+      localStorage.removeItem(COUPON_STORAGE_KEY);
+    }
+  }, [appliedCoupon]);
 
   const addItem = (product: Product, quantity = 1) => {
     setItems(current => {
@@ -60,6 +83,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const clearCart = () => {
     setItems([]);
+    setAppliedCoupon(null);
   };
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
@@ -67,6 +91,66 @@ export function CartProvider({ children }: { children: ReactNode }) {
     (sum, item) => sum + item.product.price * item.quantity,
     0
   );
+
+  const applyCoupon = async (code: string): Promise<{ success: boolean; message: string }> => {
+    try {
+      const { data, error } = await supabase
+        .from('coupons')
+        .select('*')
+        .eq('code', code.toUpperCase().trim())
+        .eq('active', true)
+        .maybeSingle();
+
+      if (error) throw error;
+
+      if (!data) {
+        return { success: false, message: 'Cupom não encontrado ou inválido' };
+      }
+
+      const coupon = data as unknown as Coupon;
+
+      // Check validity period
+      if (coupon.valid_from && new Date(coupon.valid_from) > new Date()) {
+        return { success: false, message: 'Este cupom ainda não está válido' };
+      }
+
+      if (coupon.valid_until && new Date(coupon.valid_until) < new Date()) {
+        return { success: false, message: 'Este cupom expirou' };
+      }
+
+      // Check max uses
+      if (coupon.max_uses && coupon.uses_count >= coupon.max_uses) {
+        return { success: false, message: 'Este cupom atingiu o limite de usos' };
+      }
+
+      // Check min purchase
+      if (totalPrice < coupon.min_purchase) {
+        return {
+          success: false,
+          message: `Compra mínima de R$ ${coupon.min_purchase.toFixed(2).replace('.', ',')} necessária`,
+        };
+      }
+
+      setAppliedCoupon(coupon);
+      return { success: true, message: 'Cupom aplicado com sucesso!' };
+    } catch (error) {
+      console.error('Error applying coupon:', error);
+      return { success: false, message: 'Erro ao aplicar cupom' };
+    }
+  };
+
+  const removeCoupon = () => {
+    setAppliedCoupon(null);
+  };
+
+  // Calculate discount
+  const couponDiscount = appliedCoupon
+    ? appliedCoupon.discount_type === 'percentage'
+      ? (totalPrice * appliedCoupon.discount_value) / 100
+      : Math.min(appliedCoupon.discount_value, totalPrice)
+    : 0;
+
+  const finalPrice = totalPrice - couponDiscount;
 
   return (
     <CartContext.Provider
@@ -78,6 +162,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
         clearCart,
         totalItems,
         totalPrice,
+        appliedCoupon,
+        couponDiscount,
+        finalPrice,
+        applyCoupon,
+        removeCoupon,
       }}
     >
       {children}

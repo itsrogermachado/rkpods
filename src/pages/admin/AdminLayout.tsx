@@ -1,5 +1,5 @@
 import { Link, useLocation, Outlet } from 'react-router-dom';
-import { LayoutDashboard, Package, FolderTree, ShoppingCart, ArrowLeft, Menu, MapPinned } from 'lucide-react';
+import { LayoutDashboard, Package, FolderTree, ShoppingCart, ArrowLeft, Menu, MapPinned, Ticket } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
@@ -10,6 +10,7 @@ const navItems = [
   { href: '/admin/produtos', label: 'Produtos', icon: Package },
   { href: '/admin/categorias', label: 'Categorias', icon: FolderTree },
   { href: '/admin/zonas', label: 'Zonas', icon: MapPinned },
+  { href: '/admin/cupons', label: 'Cupons', icon: Ticket },
   { href: '/admin/pedidos', label: 'Pedidos', icon: ShoppingCart },
 ];
 

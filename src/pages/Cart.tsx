@@ -1,13 +1,48 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Minus, Plus, Trash2, ShoppingBag, ArrowRight } from 'lucide-react';
+import { Minus, Plus, Trash2, ShoppingBag, ArrowRight, Ticket, X } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { useCart } from '@/contexts/CartContext';
+import { useToast } from '@/components/ui/use-toast';
 
 export default function Cart() {
-  const { items, updateQuantity, removeItem, totalPrice, clearCart } = useCart();
+  const {
+    items,
+    updateQuantity,
+    removeItem,
+    totalPrice,
+    clearCart,
+    appliedCoupon,
+    couponDiscount,
+    finalPrice,
+    applyCoupon,
+    removeCoupon,
+  } = useCart();
+  const [couponCode, setCouponCode] = useState('');
+  const [applyingCoupon, setApplyingCoupon] = useState(false);
+  const { toast } = useToast();
+
+  async function handleApplyCoupon() {
+    if (!couponCode.trim()) return;
+
+    setApplyingCoupon(true);
+    const result = await applyCoupon(couponCode);
+    setApplyingCoupon(false);
+
+    toast({
+      title: result.success ? 'Sucesso!' : 'Erro',
+      description: result.message,
+      variant: result.success ? 'default' : 'destructive',
+    });
+
+    if (result.success) {
+      setCouponCode('');
+    }
+  }
 
   if (items.length === 0) {
     return (
@@ -128,11 +163,54 @@ export default function Cart() {
             <div className="lg:col-span-1">
               <Card className="p-6 sticky top-24">
                 <h2 className="text-xl font-bold mb-4">Resumo do Pedido</h2>
+
+                {/* Coupon Input */}
+                <div className="mb-4">
+                  {appliedCoupon ? (
+                    <div className="flex items-center justify-between p-3 bg-primary/10 rounded-lg border border-primary/20">
+                      <div className="flex items-center gap-2">
+                        <Ticket className="h-4 w-4 text-primary" />
+                        <span className="font-medium text-primary">{appliedCoupon.code}</span>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6"
+                        onClick={removeCoupon}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="Código do cupom"
+                        value={couponCode}
+                        onChange={e => setCouponCode(e.target.value.toUpperCase())}
+                        onKeyDown={e => e.key === 'Enter' && handleApplyCoupon()}
+                      />
+                      <Button
+                        variant="outline"
+                        onClick={handleApplyCoupon}
+                        disabled={applyingCoupon || !couponCode.trim()}
+                      >
+                        {applyingCoupon ? '...' : 'Aplicar'}
+                      </Button>
+                    </div>
+                  )}
+                </div>
+
                 <div className="space-y-3 mb-6">
                   <div className="flex justify-between text-muted-foreground">
                     <span>Subtotal</span>
                     <span>R$ {totalPrice.toFixed(2).replace('.', ',')}</span>
                   </div>
+                  {couponDiscount > 0 && (
+                    <div className="flex justify-between text-green-600">
+                      <span>Desconto ({appliedCoupon?.code})</span>
+                      <span>- R$ {couponDiscount.toFixed(2).replace('.', ',')}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between text-muted-foreground">
                     <span>Frete</span>
                     <span className="text-green-600">A calcular</span>
@@ -141,7 +219,7 @@ export default function Cart() {
                   <div className="flex justify-between text-lg font-bold">
                     <span>Total</span>
                     <span className="text-primary">
-                      R$ {totalPrice.toFixed(2).replace('.', ',')}
+                      R$ {finalPrice.toFixed(2).replace('.', ',')}
                     </span>
                   </div>
                 </div>
