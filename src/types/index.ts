@@ -83,3 +83,18 @@ export interface ZoneStock {
   stock: number;
   created_at: string;
 }
+
+export interface Coupon {
+  id: string;
+  code: string;
+  description: string | null;
+  discount_type: 'percentage' | 'fixed';
+  discount_value: number;
+  min_purchase: number;
+  max_uses: number | null;
+  uses_count: number;
+  valid_from: string;
+  valid_until: string | null;
+  active: boolean;
+  created_at: string;
+}
