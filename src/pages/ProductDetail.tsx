@@ -174,9 +174,9 @@ export default function ProductDetail() {
             Voltar para produtos
           </Link>
 
-          <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
+          <div className="grid md:grid-cols-2 gap-6 lg:gap-12">
             {/* Images */}
-            <div className="space-y-4">
+            <div className="space-y-3">
               <div className="aspect-square rounded-2xl overflow-hidden bg-muted">
                 <img
                   src={images[selectedImage]}
@@ -190,7 +190,7 @@ export default function ProductDetail() {
                     <button
                       key={idx}
                       onClick={() => setSelectedImage(idx)}
-                      className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-colors ${
+                      className={`flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden border-2 transition-colors ${
                         idx === selectedImage ? 'border-primary' : 'border-transparent'
                       }`}
                     >
@@ -202,38 +202,38 @@ export default function ProductDetail() {
             </div>
 
             {/* Details */}
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               <div>
                 {product.brand && (
-                  <p className="text-sm text-muted-foreground uppercase tracking-wide mb-2">
+                  <p className="text-xs sm:text-sm text-muted-foreground uppercase tracking-wide mb-1 sm:mb-2">
                     {product.brand}
                   </p>
                 )}
-                <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
-                <div className="flex flex-wrap gap-2">
+                <h1 className="text-2xl sm:text-3xl font-bold mb-2">{product.name}</h1>
+                <div className="flex flex-wrap gap-1.5 sm:gap-2">
                   {product.category && (
-                    <Badge variant="secondary">{product.category.name}</Badge>
+                    <Badge variant="secondary" className="text-xs">{product.category.name}</Badge>
                   )}
                   {product.flavor && (
-                    <Badge variant="outline">🍃 {product.flavor}</Badge>
+                    <Badge variant="outline" className="text-xs">🍃 {product.flavor}</Badge>
                   )}
                   {product.nicotine_level && (
-                    <Badge variant="outline">💨 {product.nicotine_level}</Badge>
+                    <Badge variant="outline" className="text-xs">💨 {product.nicotine_level}</Badge>
                   )}
                 </div>
               </div>
 
               {/* Price */}
-              <div className="flex items-baseline gap-3">
-                <span className="text-4xl font-bold text-primary">
+              <div className="flex items-baseline gap-2 sm:gap-3 flex-wrap">
+                <span className="text-3xl sm:text-4xl font-bold text-primary">
                   R$ {product.price.toFixed(2).replace('.', ',')}
                 </span>
                 {product.original_price && (
                   <>
-                    <span className="text-xl text-muted-foreground line-through">
+                    <span className="text-lg sm:text-xl text-muted-foreground line-through">
                       R$ {product.original_price.toFixed(2).replace('.', ',')}
                     </span>
-                    <Badge className="gradient-warm border-0">
+                    <Badge className="gradient-warm border-0 text-xs">
                       -{discountPercentage}%
                     </Badge>
                   </>
@@ -254,27 +254,29 @@ export default function ProductDetail() {
 
               {/* Description */}
               {product.description && (
-                <p className="text-muted-foreground leading-relaxed">
+                <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                   {product.description}
                 </p>
               )}
 
               {/* Quantity & Actions */}
               <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-3 border rounded-lg p-2">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="flex items-center gap-2 sm:gap-3 border rounded-lg p-1.5 sm:p-2">
                     <Button
                       variant="ghost"
                       size="icon"
+                      className="h-8 w-8 sm:h-10 sm:w-10"
                       onClick={() => setQuantity(q => Math.max(1, q - 1))}
                       disabled={quantity <= 1}
                     >
                       <Minus className="h-4 w-4" />
                     </Button>
-                    <span className="w-12 text-center font-semibold">{quantity}</span>
+                    <span className="w-8 sm:w-12 text-center font-semibold text-sm sm:text-base">{quantity}</span>
                     <Button
                       variant="ghost"
                       size="icon"
+                      className="h-8 w-8 sm:h-10 sm:w-10"
                       onClick={() => setQuantity(q => Math.min(product.stock, q + 1))}
                       disabled={quantity >= product.stock}
                     >
@@ -284,18 +286,18 @@ export default function ProductDetail() {
 
                   <Button
                     variant="outline"
-                    size="lg"
+                    size="icon"
                     onClick={toggleFavorite}
-                    className="px-4 ml-auto"
+                    className="h-9 w-9 sm:h-11 sm:w-11 ml-auto"
                   >
-                    <Heart className={`h-5 w-5 ${isFavorite ? 'fill-accent text-accent' : ''}`} />
+                    <Heart className={`h-4 w-4 sm:h-5 sm:w-5 ${isFavorite ? 'fill-accent text-accent' : ''}`} />
                   </Button>
                 </div>
 
-                <div className="flex gap-3">
+                <div className="flex gap-2 sm:gap-3">
                   <Button
                     onClick={handleBuyNow}
-                    className="flex-1 gradient-primary"
+                    className="flex-1 gradient-primary text-sm sm:text-base"
                     size="lg"
                     disabled={product.stock === 0}
                   >
@@ -305,11 +307,11 @@ export default function ProductDetail() {
                   <Button
                     onClick={handleAddToCart}
                     variant="outline"
-                    className="flex-1"
+                    className="flex-1 text-sm sm:text-base"
                     size="lg"
                     disabled={product.stock === 0}
                   >
-                    <ShoppingCart className="h-5 w-5 mr-2" />
+                    <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2" />
                     Carrinho
                   </Button>
                 </div>
