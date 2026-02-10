@@ -92,6 +92,7 @@ export type Database = {
       coupons: {
         Row: {
           active: boolean
+          category_ids: string[] | null
           code: string
           created_at: string
           description: string | null
@@ -100,12 +101,15 @@ export type Database = {
           id: string
           max_uses: number | null
           min_purchase: number | null
+          product_ids: string[] | null
           uses_count: number
           valid_from: string | null
           valid_until: string | null
+          zone_ids: string[] | null
         }
         Insert: {
           active?: boolean
+          category_ids?: string[] | null
           code: string
           created_at?: string
           description?: string | null
@@ -114,12 +118,15 @@ export type Database = {
           id?: string
           max_uses?: number | null
           min_purchase?: number | null
+          product_ids?: string[] | null
           uses_count?: number
           valid_from?: string | null
           valid_until?: string | null
+          zone_ids?: string[] | null
         }
         Update: {
           active?: boolean
+          category_ids?: string[] | null
           code?: string
           created_at?: string
           description?: string | null
@@ -128,9 +135,11 @@ export type Database = {
           id?: string
           max_uses?: number | null
           min_purchase?: number | null
+          product_ids?: string[] | null
           uses_count?: number
           valid_from?: string | null
           valid_until?: string | null
+          zone_ids?: string[] | null
         }
         Relationships: []
       }
