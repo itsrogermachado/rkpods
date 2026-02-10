@@ -96,5 +96,8 @@ export interface Coupon {
   valid_from: string;
   valid_until: string | null;
   active: boolean;
+  product_ids: string[];
+  category_ids: string[];
+  zone_ids: string[];
   created_at: string;
 }

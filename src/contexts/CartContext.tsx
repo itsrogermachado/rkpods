@@ -13,7 +13,7 @@ interface CartContextType {
   appliedCoupon: Coupon | null;
   couponDiscount: number;
   finalPrice: number;
-  applyCoupon: (code: string) => Promise<{ success: boolean; message: string }>;
+  applyCoupon: (code: string, zoneId?: string | null) => Promise<{ success: boolean; message: string }>;
   removeCoupon: () => void;
 }
 
@@ -92,7 +92,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     0
   );
 
-  const applyCoupon = async (code: string): Promise<{ success: boolean; message: string }> => {
+  const applyCoupon = async (code: string, zoneId?: string | null): Promise<{ success: boolean; message: string }> => {
     try {
       const { data, error } = await supabase
         .from('coupons')
@@ -129,6 +129,31 @@ export function CartProvider({ children }: { children: ReactNode }) {
           success: false,
           message: `Compra mínima de R$ ${coupon.min_purchase.toFixed(2).replace('.', ',')} necessária`,
         };
+      }
+
+      // Check product restrictions
+      if (coupon.product_ids && coupon.product_ids.length > 0) {
+        const hasValidProduct = items.some(item => coupon.product_ids.includes(item.product.id));
+        if (!hasValidProduct) {
+          return { success: false, message: 'Este cupom não é válido para os produtos no carrinho' };
+        }
+      }
+
+      // Check category restrictions
+      if (coupon.category_ids && coupon.category_ids.length > 0) {
+        const hasValidCategory = items.some(item =>
+          item.product.category_id && coupon.category_ids.includes(item.product.category_id)
+        );
+        if (!hasValidCategory) {
+          return { success: false, message: 'Este cupom não é válido para as categorias no carrinho' };
+        }
+      }
+
+      // Check zone restrictions
+      if (coupon.zone_ids && coupon.zone_ids.length > 0) {
+        if (!zoneId || !coupon.zone_ids.includes(zoneId)) {
+          return { success: false, message: 'Este cupom não é válido para a zona selecionada' };
+        }
       }
 
       setAppliedCoupon(coupon);
