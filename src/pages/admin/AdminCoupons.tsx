@@ -404,6 +404,7 @@ export default function AdminCoupons() {
                   </Label>
                   <div className="max-h-32 overflow-y-auto border rounded-lg p-2 space-y-1">
                     {products
+                      .filter(p => p.stock > 0)
                       .filter(p => formData.category_ids.length === 0 || (p.category_id && formData.category_ids.includes(p.category_id)))
                       .map(p => (
                         <label key={p.id} className="flex items-center gap-2 py-1 px-2 rounded hover:bg-muted/50 cursor-pointer text-sm">
