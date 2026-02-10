@@ -128,15 +128,14 @@ export function ProductCard({ product, isFavorite, onFavoriteToggle }: ProductCa
             />
           </Button>
 
-          {/* Quick Add Button */}
+          {/* Buy Button */}
           <div className="absolute bottom-3 left-3 right-3 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 z-10">
             <Button
-              onClick={handleAddToCart}
               className="w-full bg-primary hover:bg-primary/90 text-primary-foreground border-0 backdrop-blur-sm font-semibold btn-premium"
               disabled={product.stock === 0}
             >
               <ShoppingCart className="h-4 w-4 mr-2" />
-              {product.stock === 0 ? 'Esgotado' : 'Adicionar'}
+              {product.stock === 0 ? 'Esgotado' : 'Comprar'}
             </Button>
           </div>
 
