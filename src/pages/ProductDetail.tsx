@@ -260,55 +260,59 @@ export default function ProductDetail() {
               )}
 
               {/* Quantity & Actions */}
-              <div className="flex flex-col sm:flex-row gap-4">
-                <div className="flex items-center gap-3 border rounded-lg p-2">
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 border rounded-lg p-2">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setQuantity(q => Math.max(1, q - 1))}
+                      disabled={quantity <= 1}
+                    >
+                      <Minus className="h-4 w-4" />
+                    </Button>
+                    <span className="w-12 text-center font-semibold">{quantity}</span>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setQuantity(q => Math.min(product.stock, q + 1))}
+                      disabled={quantity >= product.stock}
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </div>
+
                   <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                    disabled={quantity <= 1}
+                    variant="outline"
+                    size="lg"
+                    onClick={toggleFavorite}
+                    className="px-4 ml-auto"
                   >
-                    <Minus className="h-4 w-4" />
-                  </Button>
-                  <span className="w-12 text-center font-semibold">{quantity}</span>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setQuantity(q => Math.min(product.stock, q + 1))}
-                    disabled={quantity >= product.stock}
-                  >
-                    <Plus className="h-4 w-4" />
+                    <Heart className={`h-5 w-5 ${isFavorite ? 'fill-accent text-accent' : ''}`} />
                   </Button>
                 </div>
 
-                <Button
-                  onClick={handleBuyNow}
-                  className="flex-1 gradient-primary"
-                  size="lg"
-                  disabled={product.stock === 0}
-                >
-                  Comprar Agora
-                </Button>
+                <div className="flex gap-3">
+                  <Button
+                    onClick={handleBuyNow}
+                    className="flex-1 gradient-primary"
+                    size="lg"
+                    disabled={product.stock === 0}
+                  >
+                    Comprar Agora
+                  </Button>
 
-                <Button
-                  onClick={handleAddToCart}
-                  variant="outline"
-                  className="flex-1"
-                  size="lg"
-                  disabled={product.stock === 0}
-                >
-                  <ShoppingCart className="h-5 w-5 mr-2" />
-                  Adicionar ao Carrinho
-                </Button>
-
-                <Button
-                  variant="outline"
-                  size="lg"
-                  onClick={toggleFavorite}
-                  className="px-4"
-                >
-                  <Heart className={`h-5 w-5 ${isFavorite ? 'fill-accent text-accent' : ''}`} />
-                </Button>
+                  <Button
+                    onClick={handleAddToCart}
+                    variant="outline"
+                    className="flex-1"
+                    size="lg"
+                    disabled={product.stock === 0}
+                  >
+                    <ShoppingCart className="h-5 w-5 mr-2" />
+                    Carrinho
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
