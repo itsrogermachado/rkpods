@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Heart, Minus, Plus, ShoppingCart, Package } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
@@ -23,6 +23,7 @@ export default function ProductDetail() {
   const [loading, setLoading] = useState(true);
   const { addItem } = useCart();
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (slug) {
@@ -111,6 +112,12 @@ export default function ProductDetail() {
     if (!product) return;
     addItem(product, quantity);
     toast.success(`${quantity}x ${product.name} adicionado ao carrinho!`);
+  };
+
+  const handleBuyNow = () => {
+    if (!product) return;
+    addItem(product, quantity);
+    navigate('/carrinho');
   };
 
   const images = product?.images?.length ? product.images : [
@@ -275,8 +282,18 @@ export default function ProductDetail() {
                 </div>
 
                 <Button
-                  onClick={handleAddToCart}
+                  onClick={handleBuyNow}
                   className="flex-1 gradient-primary"
+                  size="lg"
+                  disabled={product.stock === 0}
+                >
+                  Comprar Agora
+                </Button>
+
+                <Button
+                  onClick={handleAddToCart}
+                  variant="outline"
+                  className="flex-1"
                   size="lg"
                   disabled={product.stock === 0}
                 >
