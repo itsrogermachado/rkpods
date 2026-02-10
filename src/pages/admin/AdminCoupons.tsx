@@ -369,31 +369,6 @@ export default function AdminCoupons() {
                   Restrições (deixe vazio para aplicar a todos)
                 </h3>
 
-                {/* Products */}
-                <div className="space-y-2">
-                  <Label className="flex items-center gap-2">
-                    <Package className="h-4 w-4 text-primary" />
-                    Produtos específicos
-                  </Label>
-                  <div className="max-h-32 overflow-y-auto border rounded-lg p-2 space-y-1">
-                    {products.map(p => (
-                      <label key={p.id} className="flex items-center gap-2 py-1 px-2 rounded hover:bg-muted/50 cursor-pointer text-sm">
-                        <Checkbox
-                          checked={formData.product_ids.includes(p.id)}
-                          onCheckedChange={() =>
-                            setFormData(prev => ({ ...prev, product_ids: toggleArrayItem(prev.product_ids, p.id) }))
-                          }
-                        />
-                        <span className="truncate">{p.name}</span>
-                        {p.brand && <span className="text-muted-foreground text-xs">({p.brand})</span>}
-                      </label>
-                    ))}
-                  </div>
-                  {formData.product_ids.length > 0 && (
-                    <p className="text-xs text-muted-foreground">{formData.product_ids.length} selecionado(s)</p>
-                  )}
-                </div>
-
                 {/* Categories */}
                 <div className="space-y-2">
                   <Label className="flex items-center gap-2">
@@ -415,6 +390,36 @@ export default function AdminCoupons() {
                   </div>
                   {formData.category_ids.length > 0 && (
                     <p className="text-xs text-muted-foreground">{formData.category_ids.length} selecionada(s)</p>
+                  )}
+                </div>
+
+                {/* Products (filtered by selected categories) */}
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-2">
+                    <Package className="h-4 w-4 text-primary" />
+                    Produtos específicos
+                    {formData.category_ids.length > 0 && (
+                      <span className="text-xs text-muted-foreground">(filtrado por categorias)</span>
+                    )}
+                  </Label>
+                  <div className="max-h-32 overflow-y-auto border rounded-lg p-2 space-y-1">
+                    {products
+                      .filter(p => formData.category_ids.length === 0 || (p.category_id && formData.category_ids.includes(p.category_id)))
+                      .map(p => (
+                        <label key={p.id} className="flex items-center gap-2 py-1 px-2 rounded hover:bg-muted/50 cursor-pointer text-sm">
+                          <Checkbox
+                            checked={formData.product_ids.includes(p.id)}
+                            onCheckedChange={() =>
+                              setFormData(prev => ({ ...prev, product_ids: toggleArrayItem(prev.product_ids, p.id) }))
+                            }
+                          />
+                          <span className="truncate">{p.name}</span>
+                          {p.brand && <span className="text-muted-foreground text-xs">({p.brand})</span>}
+                        </label>
+                      ))}
+                  </div>
+                  {formData.product_ids.length > 0 && (
+                    <p className="text-xs text-muted-foreground">{formData.product_ids.length} selecionado(s)</p>
                   )}
                 </div>
 
